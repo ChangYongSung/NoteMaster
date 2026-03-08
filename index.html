@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>계이름 마스터</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:    #c0392b;
+  --red2:   #e74c3c;
+  --dark:   #1a0a0a;
+  --cream:  #fdf6e3;
+  --gold:   #f39c12;
+  --green:  #27ae60;
+  --blue:   #2980b9;
+  --shadow: 0 4px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body {
+  font-family:'Jua',sans-serif;
+  background: linear-gradient(135deg,#1a0505 0%,#2d0a0a 50%,#1a0505 100%);
+  min-height:100vh; color:#fff;
+  display:flex; flex-direction:column; align-items:center;
+  padding:16px 8px 24px;
+}
+
+/* ── 제목 ── */
+h1 {
+  font-family:'Jua',sans-serif;
+  font-size:4.2rem; letter-spacing:.02em;
+  color:#c0392b; text-shadow: 0 2px 8px rgba(200,50,50,.3);
+  margin-bottom:8px; text-align:center;
+}
+h1 span { color:#f39c12; }
+
+/* ── 공통 카드 ── */
+.card {
+  background:var(--cream); color:#222;
+  border-radius:16px; padding:20px 24px;
+  box-shadow:var(--shadow); width:100%; max-width:860px;
+}
+
+/* ══════════════════════
+   1단계 설정 화면
+══════════════════════ */
+#phase-settings { display:flex; flex-direction:column; gap:16px; }
+
+.setting-row { display:flex; flex-direction:column; gap:8px; }
+.setting-label {
+  font-size:1.26rem; font-weight:bold; color:#7b2d2d;
+  padding-left:2px; border-left:4px solid var(--red); padding-left:10px;
+}
+.btn-group-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.opt-btn {
+  font-family:'Jua',sans-serif; font-size:1rem;
+  padding:8px 20px; border:2px solid #ccc; border-radius:10px;
+  background:#fff; color:#555; cursor:pointer;
+  transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.opt-btn.active {
+  background:var(--red); color:#fff; border-color:var(--red);
+  box-shadow:0 2px 8px rgba(192,57,43,.4);
+}
+.opt-btn:hover:not(.active) { border-color:#e74c3c; color:#c0392b; }
+
+.start-btn {
+  font-family:'Jua',sans-serif; font-size:1.3rem;
+  padding:14px 48px; border:none; border-radius:14px;
+  background:linear-gradient(135deg,#c0392b,#e74c3c);
+  color:#fff; cursor:pointer; align-self:center; margin-top:8px;
+  box-shadow:0 4px 16px rgba(192,57,43,.5);
+  transition:transform .1s, box-shadow .1s;
+}
+.start-btn:active { transform:scale(.97); }
+
+/* ══════════════════════
+   2단계 시험 화면
+══════════════════════ */
+#phase-quiz { display:none; flex-direction:column; align-items:center; gap:12px; width:100%; max-width:980px; }
+
+.quiz-top {
+  display:flex; gap:12px; width:100%; max-width:860px;
+  align-items:stretch;
+}
+
+/* 문제 카드 */
+.question-card {
+  background:#fdf6e3; border:3px solid #c8b89a; border-radius:14px;
+  padding:10px 14px; flex:1.52;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  min-height:162px;
+}
+.q-label {
+  font-size:1.5rem; color:#888; font-weight:bold;
+}
+.q-num { color:#c0392b; }
+svg#quiz-staff { display:block; }
+
+/* 타이머 카드 */
+.timer-card {
+  background:#fff; border:3px solid #ddd; border-radius:14px;
+  padding:10px 12px; flex:0.9; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:4px;
+  min-height:162px;
+}
+.timer-label { font-size:1.8rem; color:#888; font-weight:bold; }
+#timer-num {
+  font-family:'Black Han Sans',sans-serif;
+  font-size:7rem; color:#1a1a1a; line-height:1;
+}
+#timer-unit { font-size:2rem; color:#555; }
+
+/* 피드백 오버레이 */
+#feedback-overlay {
+  position:fixed; inset:0;
+  display:none; align-items:center; justify-content:center;
+  z-index:100; pointer-events:none;
+}
+#feedback-box {
+  font-family:'Black Han Sans',sans-serif;
+  font-size:2.8rem; padding:24px 48px;
+  border-radius:20px; text-align:center; line-height:1.4;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  animation: popIn .2s ease;
+}
+#feedback-box.correct { background:#27ae60; color:#fff; }
+#feedback-box.wrong   { background:#c0392b; color:#fff; }
+@keyframes popIn {
+  from { transform:scale(.7); opacity:0; }
+  to   { transform:scale(1);  opacity:1; }
+}
+
+/* 피아노 케이스 */
+.piano-case {
+  background:linear-gradient(180deg,#8B2A2A 0%,#6B1A1A 40%,#7A2020 70%,#5C1515 100%);
+  border-radius:12px; padding:8px 12px 10px;
+  box-shadow:0 6px 24px rgba(0,0,0,.5),inset 0 2px 4px rgba(255,255,255,.1);
+  border:2px solid #A03030; width:100%; max-width:980px;
+}
+.piano-key-area {
+  background:#111; border-radius:4px; padding:0;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.7); overflow:hidden;
+  touch-action:pan-x; -webkit-user-select:none; user-select:none;
+  padding-bottom:8px;
+}
+#piano-keyboard { position:relative; display:flex; height:130px; min-width:max-content; }
+.key.white {
+  width:52px; height:124px; background:#fff;
+  border-radius:0 0 5px 5px; z-index:1; touch-action:none;
+  border:1px solid #bbb; border-top:none; transition:background .07s;
+  position:relative;
+}
+.key.white.pressed, .key.white:active { background:#ffe0b2; }
+.key.white.ref-do { background:#fef08a; }
+.key.white.ref-do .key-label { color:#b45309; font-weight:bold; }
+.note-btn {
+  font-family:'Jua',sans-serif; font-size:2.42rem;
+  width:100px; height:100px; border:none; border-radius:16px;
+  background:linear-gradient(135deg,#c0392b,#e74c3c);
+  color:#fff; cursor:pointer;
+  box-shadow:0 4px 12px rgba(192,57,43,.4);
+  transition:transform .1s, box-shadow .1s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.note-btn:active { transform:scale(.93); box-shadow:0 2px 6px rgba(192,57,43,.3); }
+.note-btn:disabled { background:#aaa; box-shadow:none; cursor:default; }
+.key.black {
+  width:32px; height:76px; touch-action:none;
+  background:linear-gradient(180deg,#3a3a3a 0%,#111 100%);
+  border-radius:0 0 4px 4px; z-index:2;
+  border:1px solid #000; border-top:none; transition:background .07s;
+  position:absolute;
+}
+.key.black.pressed, .key.black:active { background:linear-gradient(180deg,#555 0%,#333 100%); }
+.key-label {
+  font-family:'Jua',sans-serif; font-size:17px; pointer-events:none;
+  text-align:center; line-height:1.1;
+}
+.key.white .key-label { color:#1a237e; position:absolute; bottom:6px; width:100%; }
+
+/* ══════════════════════
+   3단계 결과 화면
+══════════════════════ */
+#phase-result {
+  display:none; flex-direction:column; align-items:center; gap:20px;
+  width:100%; max-width:860px;
+}
+.result-card {
+  background:var(--cream); color:#222; border-radius:16px;
+  padding:32px 28px; box-shadow:var(--shadow);
+  width:100%; text-align:center;
+}
+.result-emoji { font-size:5.2rem; margin-bottom:8px; }
+.result-msg {
+  font-family:'Black Han Sans',sans-serif;
+  font-size:2.47rem; color:#c0392b; margin-bottom:12px;
+}
+.result-score {
+  font-size:1.5rem; color:#555; margin-bottom:4px;
+}
+.result-big {
+  font-family:'Black Han Sans',sans-serif;
+  font-size:3.9rem; color:#1a1a1a;
+}
+.result-btns { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+.result-btn {
+  font-family:'Jua',sans-serif; font-size:1.43rem;
+  padding:14px 36px; border:none; border-radius:12px;
+  cursor:pointer; transition:transform .1s;
+}
+.result-btn:active { transform:scale(.97); }
+.btn-home { background:#555; color:#fff; }
+.btn-retry { background:var(--red); color:#fff; }
+</style>
+</head>
+<body>
+
+<!-- ══ 1단계: 설정 ══ -->
+<div id="phase-settings" class="card">
+  <h1 style="text-align:center;margin-bottom:16px;">🎵 계이름 <span style='color:#f39c12'>마스터</span></h1>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <!-- 왼쪽: 연습할 계이름 + 계이름 길이 -->
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:14px;">
+      <div class="setting-row">
+        <div class="setting-label">연습할 계이름</div>
+        <div class="btn-group-row" style="justify-content:flex-start;">
+          <button class="opt-btn active" id="range-high" onclick="setSetting('range','high')">높은 음자리표</button>
+          <button class="opt-btn"        id="range-low"  onclick="setSetting('range','low')">낮은 음자리표</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">계이름의 범위</div>
+        <div class="btn-group-row" style="justify-content:flex-start;">
+          <button class="opt-btn active" id="oct-1" onclick="setSetting('oct','1')">한 옥타브</button>
+          <button class="opt-btn"        id="oct-2" onclick="setSetting('oct','2')">두 옥타브</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">정답 입력 방식</div>
+        <div class="btn-group-row" style="justify-content:flex-start;">
+          <button class="opt-btn"        id="ans-piano"  onclick="setSetting('answerMode','piano')">🎹 피아노 건반</button>
+          <button class="opt-btn active" id="ans-button" onclick="setSetting('answerMode','button')">🎵 큰 버튼</button>
+        </div>
+      </div>
+    </div>
+    <!-- 오른쪽: 문제 수 + 난이도 -->
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:14px;">
+      <div class="setting-row">
+        <div class="setting-label">문제의 수</div>
+        <div class="btn-group-row" style="justify-content:flex-start;">
+          <button class="opt-btn"        id="q-10" onclick="setSetting('qcount','10')">10문제</button>
+          <button class="opt-btn"        id="q-15" onclick="setSetting('qcount','15')">15문제</button>
+          <button class="opt-btn active" id="q-20" onclick="setSetting('qcount','20')">20문제</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">난이도</div>
+        <div class="btn-group-row" style="justify-content:flex-start;">
+          <button class="opt-btn"        id="diff-beginner" onclick="setSetting('diff','beginner')">초보 (8초)</button>
+          <button class="opt-btn"        id="diff-easy"   onclick="setSetting('diff','easy')">관대 (6초)</button>
+          <button class="opt-btn active" id="diff-normal" onclick="setSetting('diff','normal')">진지 (4초)</button>
+          <button class="opt-btn"        id="diff-hard"   onclick="setSetting('diff','hard')">엄격 (3초)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="startQuiz()">🎹 시작!</button>
+</div>
+
+<!-- ══ 2단계: 시험 ══ -->
+<div id="phase-quiz">
+  <div style="display:flex;align-items:center;width:100%;max-width:860px;gap:8px;margin-bottom:0;">
+    <button onclick="goHome()" style="font-family:'Jua',sans-serif;font-size:1.43rem;padding:10px 27px;background:#888;color:#fff;border:none;border-radius:12px;cursor:pointer;">← 이전 화면</button>
+    <div style="flex:1;"></div>
+    <button id="btn-pause" onclick="togglePause()" style="font-family:'Jua',sans-serif;font-size:1.43rem;padding:10px 27px;background:#e67e22;color:#fff;border:none;border-radius:12px;cursor:pointer;">⏸ 일시정지</button>
+  </div>
+  <div class="quiz-top">
+    <div class="question-card">
+      <div class="q-label">다음 계이름은 무엇일까요? <span id="q-progress" class="q-num"></span></div>
+      <svg id="quiz-staff" width="342" height="189" viewBox="0 0 360 210"></svg>
+      <div style="font-size:1.28rem;color:#999;margin-top:4px;">건반에서 맞는 계이름을 눌러보세요.</div>
+    </div>
+    <div class="timer-card">
+      <div class="timer-label">남은 시간</div>
+      <div id="timer-num">3</div>
+      <div id="timer-unit">초</div>
+    </div>
+  </div><!-- /quiz-top -->
+
+  <div id="answer-piano" class="piano-case">
+    <div class="piano-key-area"><div id="piano-keyboard"></div></div>
+  </div>
+  <div id="answer-buttons" style="display:none;width:100%;max-width:860px;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:16px 0;">
+      <button class="note-btn" onclick="onNoteBtn('도')">도</button>
+      <button class="note-btn" onclick="onNoteBtn('레')">레</button>
+      <button class="note-btn" onclick="onNoteBtn('미')">미</button>
+      <button class="note-btn" onclick="onNoteBtn('파')">파</button>
+      <button class="note-btn" onclick="onNoteBtn('솔')">솔</button>
+      <button class="note-btn" onclick="onNoteBtn('라')">라</button>
+      <button class="note-btn" onclick="onNoteBtn('시')">시</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3단계: 결과 ══ -->
+<div id="phase-result">
+  <div class="result-card">
+    <div class="result-emoji" id="result-emoji">🎵</div>
+    <div class="result-msg"  id="result-msg">훌륭합니다!</div>
+    <div id="result-summary" style="font-size:1.3rem;color:#888;margin-bottom:10px;letter-spacing:.05em;"></div>
+    <div class="result-score" id="result-score">20문제 중 18개 정답</div>
+    <div class="result-big"  id="result-pct">90%</div>
+  </div>
+  <div class="result-btns">
+    <button class="result-btn btn-home"  onclick="goHome()">처음으로</button>
+    <button class="result-btn btn-retry" onclick="retryQuiz()">같은 설정으로 재도전!</button>
+  </div>
+</div>
+
+<!-- 피드백 오버레이 -->
+<div id="feedback-overlay">
+  <div id="feedback-box"></div>
+</div>
+
+<script>
+// ══ 오디오 ══
+const actx = new (window.AudioContext||window.webkitAudioContext)();
+const mGain = actx.createGain(); mGain.gain.value=0.6; mGain.connect(actx.destination);
+
+// 첫 터치시 오디오 엔진 워밍업
+// 오디오 워밍업: 페이지 로드 즉시 + 첫 터치 시 이중 보장
+async function warmupAudio(){
+  try {
+    if(actx.state==='suspended') await actx.resume();
+    const now=actx.currentTime;
+    // 여러 음색 미리 생성해 파이프라인 초기화
+    for(let i=0;i<3;i++){
+      const o=actx.createOscillator(), g=actx.createGain();
+      o.type = ['sine','triangle','square'][i];
+      o.frequency.value = 220+i*110;
+      g.gain.setValueAtTime(0.00001,now); g.gain.linearRampToValueAtTime(0.00001,now+0.5);
+      o.connect(g).connect(actx.destination);
+      o.start(now+i*0.01); o.stop(now+0.5);
+    }
+  } catch(e){}
+}
+// 첫 터치/클릭 시 워밍업
+window.addEventListener('pointerdown', warmupAudio, {once:true, capture:true});
+window.addEventListener('touchstart',  warmupAudio, {once:true, capture:true, passive:true});
+// 페이지 가시성 변경 시에도 resume (백그라운드→포그라운드)
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && actx.state==='suspended') actx.resume(); });
+
+function playNote(freq){
+  if(actx.state==='suspended') actx.resume();
+  const now=actx.currentTime, g=actx.createGain(), f=actx.createBiquadFilter();
+  const o1=actx.createOscillator(); o1.type='triangle'; o1.frequency.value=freq;
+  const o2=actx.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2;
+  const g2=actx.createGain(); g2.gain.value=0.2;
+  const oh=actx.createOscillator(); oh.type='sine'; oh.frequency.value=freq*3;
+  const gh=actx.createGain(); gh.gain.setValueAtTime(0.6,now); gh.gain.exponentialRampToValueAtTime(0.0001,now+0.1);
+  o1.connect(f); o2.connect(g2).connect(f); oh.connect(gh).connect(f);
+  f.type='lowpass'; f.frequency.setValueAtTime(4000,now); f.frequency.exponentialRampToValueAtTime(800,now+1);
+  g.gain.setValueAtTime(0.0001,now); g.gain.linearRampToValueAtTime(0.4,now+0.005); g.gain.exponentialRampToValueAtTime(0.01,now+2);
+  f.connect(g).connect(mGain);
+  [o1,o2,oh].forEach(o=>{ o.start(now); try{o.stop(now+2.5);}catch(e){} });
+}
+
+// ══ 설정 상태 ══
+const cfg = { range:'high', oct:'1', qcount:'20', diff:'normal', answerMode:'button' };
+const diffTime = {beginner:8, easy:6, normal:4, hard:3};
+
+function setSetting(key, val){
+  cfg[key] = val;
+  // 같은 키의 모든 버튼 비활성화
+  const prefixes = {range:'range-', oct:'oct-', qcount:'q-', diff:'diff-', answerMode:'ans-'};
+  document.querySelectorAll(`[id^="${prefixes[key]}"]`).forEach(b=>b.classList.remove('active'));
+  // 해당 버튼 활성화
+  const ids = {
+    range: {high:'range-high', low:'range-low'},
+    oct:   {'1':'oct-1', '2':'oct-2'},
+    qcount:{'10':'q-10','15':'q-15','20':'q-20'},
+    diff:  {beginner:'diff-beginner',easy:'diff-easy',normal:'diff-normal',hard:'diff-hard'},
+    answerMode: {piano:'ans-piano', button:'ans-button'},
+  };
+  document.getElementById(ids[key][val]).classList.add('active');
+}
+
+// ══ 음표 데이터 ══
+// 높은 음자리표: step = 선 위 반칸 단위 (0=첫째 줄, 2=둘째 줄...)
+// C4=s:-2(아래 덧줄), D4=s:-1, E4=s:0, F4=s:1, G4=s:2, A4=s:3, B4=s:4
+// C5=s:5(위 덧줄)
+// 낮은 음자리표: 별도 step 체계 사용
+const NOTES_TREBLE = [
+  // 한 옥타브 범위: C4~C5
+  {n:'C4',k:'도',f:261.63,clef:'treble',s:-2},
+  {n:'D4',k:'레',f:293.66,clef:'treble',s:-1},
+  {n:'E4',k:'미',f:329.63,clef:'treble',s:0},
+  {n:'F4',k:'파',f:349.23,clef:'treble',s:1},
+  {n:'G4',k:'솔',f:392.00,clef:'treble',s:2},
+  {n:'A4',k:'라',f:440.00,clef:'treble',s:3},
+  {n:'B4',k:'시',f:493.88,clef:'treble',s:4},
+  {n:'C5',k:'도',f:523.25,clef:'treble',s:5},
+  // 두 옥타브 추가: D5~B5
+  {n:'D5',k:'레',f:587.33,clef:'treble',s:6},
+  {n:'E5',k:'미',f:659.25,clef:'treble',s:7},
+  {n:'F5',k:'파',f:698.46,clef:'treble',s:8},
+  {n:'G5',k:'솔',f:783.99,clef:'treble',s:9},
+  {n:'A5',k:'라',f:880.00,clef:'treble',s:10},
+  {n:'B5',k:'시',f:987.77,clef:'treble',s:11},
+];
+
+const NOTES_BASS = [
+  // 낮은 음자리표 정확한 step 값
+  // 1선=G2(s=0), 2선=B2(s=2), 3선=D3(s=4), 4선=F3(s=6), 5선=A3(s=8)
+  // 한 옥타브: C3~C4
+  {n:'C3',k:'도',f:130.81,clef:'bass',s:3},
+  {n:'D3',k:'레',f:146.83,clef:'bass',s:4},
+  {n:'E3',k:'미',f:164.81,clef:'bass',s:5},
+  {n:'F3',k:'파',f:174.61,clef:'bass',s:6},
+  {n:'G3',k:'솔',f:196.00,clef:'bass',s:7},
+  {n:'A3',k:'라',f:220.00,clef:'bass',s:8},
+  {n:'B3',k:'시',f:246.94,clef:'bass',s:9},
+  {n:'C4',k:'도',f:261.63,clef:'bass',s:10},
+  // 두 옥타브 추가: C2~B2
+  {n:'C2',k:'도',f:65.41, clef:'bass',s:-4},
+  {n:'D2',k:'레',f:73.42, clef:'bass',s:-3},
+  {n:'E2',k:'미',f:82.41, clef:'bass',s:-2},
+  {n:'F2',k:'파',f:87.31, clef:'bass',s:-1},
+  {n:'G2',k:'솔',f:98.00, clef:'bass',s:0},
+  {n:'A2',k:'라',f:110.00,clef:'bass',s:1},
+  {n:'B2',k:'시',f:123.47,clef:'bass',s:2},
+];
+
+// ══ 건반 데이터 (C2~C5 범위) ══
+const PIANO_NOTES = [
+  {n:'C2', k:'도', o:2, f:65.41,  acc:null},
+  {n:'C#2',k:'도#',o:2, f:69.30,  acc:'sharp'},
+  {n:'D2', k:'레', o:2, f:73.42,  acc:null},
+  {n:'Eb2',k:'미b',o:2, f:77.78,  acc:'flat'},
+  {n:'E2', k:'미', o:2, f:82.41,  acc:null},
+  {n:'F2', k:'파', o:2, f:87.31,  acc:null},
+  {n:'F#2',k:'파#',o:2, f:92.50,  acc:'sharp'},
+  {n:'G2', k:'솔', o:2, f:98.00,  acc:null},
+  {n:'Ab2',k:'라b',o:2, f:103.83, acc:'flat'},
+  {n:'A2', k:'라', o:2, f:110.00, acc:null},
+  {n:'Bb2',k:'시b',o:2, f:116.54, acc:'flat'},
+  {n:'B2', k:'시', o:2, f:123.47, acc:null},
+  {n:'C3', k:'도', o:3, f:130.81, acc:null},
+  {n:'C#3',k:'도#',o:3, f:138.59, acc:'sharp'},
+  {n:'D3', k:'레', o:3, f:146.83, acc:null},
+  {n:'Eb3',k:'미b',o:3, f:155.56, acc:'flat'},
+  {n:'E3', k:'미', o:3, f:164.81, acc:null},
+  {n:'F3', k:'파', o:3, f:174.61, acc:null},
+  {n:'F#3',k:'파#',o:3, f:185.00, acc:'sharp'},
+  {n:'G3', k:'솔', o:3, f:196.00, acc:null},
+  {n:'Ab3',k:'라b',o:3, f:207.65, acc:'flat'},
+  {n:'A3', k:'라', o:3, f:220.00, acc:null},
+  {n:'Bb3',k:'시b',o:3, f:233.08, acc:'flat'},
+  {n:'B3', k:'시', o:3, f:246.94, acc:null},
+  {n:'C4', k:'도', o:4, f:261.63, acc:null},
+  {n:'C#4',k:'도#',o:4, f:277.18, acc:'sharp'},
+  {n:'D4', k:'레', o:4, f:293.66, acc:null},
+  {n:'Eb4',k:'미b',o:4, f:311.13, acc:'flat'},
+  {n:'E4', k:'미', o:4, f:329.63, acc:null},
+  {n:'F4', k:'파', o:4, f:349.23, acc:null},
+  {n:'F#4',k:'파#',o:4, f:369.99, acc:'sharp'},
+  {n:'G4', k:'솔', o:4, f:392.00, acc:null},
+  {n:'Ab4',k:'라b',o:4, f:415.30, acc:'flat'},
+  {n:'A4', k:'라', o:4, f:440.00, acc:null},
+  {n:'Bb4',k:'시b',o:4, f:466.16, acc:'flat'},
+  {n:'B4', k:'시', o:4, f:493.88, acc:null},
+  {n:'C5', k:'도', o:5, f:523.25, acc:null},
+  {n:'C#5',k:'도#',o:5, f:554.37, acc:'sharp'},
+  {n:'D5', k:'레', o:5, f:587.33, acc:null},
+  {n:'Eb5',k:'미b',o:5, f:622.25, acc:'flat'},
+  {n:'E5', k:'미', o:5, f:659.25, acc:null},
+  {n:'F5', k:'파', o:5, f:698.46, acc:null},
+  {n:'F#5',k:'파#',o:5, f:739.99, acc:'sharp'},
+  {n:'G5', k:'솔', o:5, f:784.00, acc:null},
+  {n:'Ab5',k:'라b',o:5, f:830.61, acc:'flat'},
+  {n:'A5', k:'라', o:5, f:880.00, acc:null},
+  {n:'Bb5',k:'시b',o:5, f:932.33, acc:'flat'},
+  {n:'B5', k:'시', o:5, f:987.77, acc:null},
+];
+
+// ══ 건반 생성 ══
+const WHITE_KEYS = PIANO_NOTES.filter(n=>!n.acc);
+const BLACK_KEYS = PIANO_NOTES.filter(n=>n.acc);
+const wIdx = {}; WHITE_KEYS.forEach((n,i)=>wIdx[n.n]=i);
+const WW = 52;
+const blackAfter = {
+  'C#2':'C2','Eb2':'D2','F#2':'F2','Ab2':'G2','Bb2':'A2',
+  'C#3':'C3','Eb3':'D3','F#3':'F3','Ab3':'G3','Bb3':'A3',
+  'C#4':'C4','Eb4':'D4','F#4':'F4','Ab4':'G4','Bb4':'A4',
+  'C#5':'C5','Eb5':'D5','F#5':'F5','Ab5':'G5','Bb5':'A5',
+};
+
+function buildKb(minNote, maxNote){
+  const kb = document.getElementById('piano-keyboard');
+  kb.innerHTML = '';
+  const allWhite = PIANO_NOTES.filter(n=>!n.acc);
+  const allBlack = PIANO_NOTES.filter(n=>n.acc);
+  const wLocal = allWhite.filter(n=>{
+    const noteNum = n.o*12 + 'CDEFGAB'.indexOf(n.n[0]);
+    const minNum = parseInt(minNote.slice(-1))*12 + 'CDEFGAB'.indexOf(minNote[0]);
+    const maxNum = parseInt(maxNote.slice(-1))*12 + 'CDEFGAB'.indexOf(maxNote[0]);
+    return noteNum>=minNum && noteNum<=maxNum;
+  });
+  const wIdxLocal = {}; wLocal.forEach((n,i)=>wIdxLocal[n.n]=i);
+  wLocal.forEach((n,i)=>{
+    const el=document.createElement('div');
+    el.className='key white'; el.dataset.note=n.n;
+    const lbl=document.createElement('div');
+    lbl.className='key-label'; lbl.textContent=n.k;
+    el.appendChild(lbl);
+    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); onKey(n); });
+    el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); });
+    el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); });
+    kb.appendChild(el);
+  });
+  kb.style.position='relative';
+  allBlack.forEach(n=>{
+    const left=blackAfter[n.n]; if(!left) return;
+    const li=wIdxLocal[left]; if(li===undefined) return;
+    const el=document.createElement('div');
+    el.className='key black'; el.dataset.note=n.n;
+    el.style.left=(li*WW+WW-16)+'px'; el.style.top='0';
+    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); onKey(n); });
+    el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); });
+    el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); });
+    kb.appendChild(el);
+  });
+  // 컨테이너 너비에 맞게 건반 크기 동적 계산
+  const pianoCase = document.getElementById('piano-keyboard').closest('.piano-case') ||
+                    document.getElementById('piano-keyboard').parentElement.parentElement;
+  const containerW = pianoCase.clientWidth - 26; // padding 12px*2 + border 1px*2 = 26
+  const numWhite = wLocal.length;
+  const dynWW = Math.max(WW, Math.floor(containerW / numWhite));
+  const dynBW = Math.round(dynWW * 32/52);
+  const dynBOffset = dynWW - Math.round(dynBW/2) - 2;
+
+  // 흰건반 너비 적용
+  kb.querySelectorAll('.key.white').forEach((el,i)=>{
+    el.style.width = dynWW+'px';
+  });
+  // 검은건반 위치 재계산
+  kb.querySelectorAll('.key.black').forEach(el=>{
+    const leftNote = Object.entries(blackAfter).find(([k])=>k===el.dataset.note)?.[1];
+    if(!leftNote) return;
+    const li = wIdxLocal[leftNote];
+    if(li===undefined) return;
+    el.style.left = (li*dynWW + dynWW - Math.round(dynBW/2) - 2)+'px';
+    el.style.width = dynBW+'px';
+  });
+  kb.style.width = (numWhite*dynWW)+'px';
+}
+
+// 초기 건반 (기본: 높은음 1옥타브 C4~C5)
+buildKb('C4','C5');
+
+// 창 크기 변경 시 현재 설정으로 재빌드
+window.addEventListener('resize', ()=>{
+  if(document.getElementById('phase-quiz').style.display!=='none'){
+    const isHigh2 = cfg.range==='high';
+    const isLow2  = cfg.range==='low';
+    const is2oct2 = cfg.oct==='2';
+    let kbMin, kbMax;
+    if(isHigh2){ kbMin='C4'; kbMax=is2oct2?'B5':'C5'; }
+    else        { kbMin=is2oct2?'C2':'C3'; kbMax='C4'; }
+    buildKb(kbMin, kbMax);
+  }
+});
+
+// ══ 퀴즈 상태 ══
+let questions=[], qIdx=0, score=0, timeLeft=0, timerInterval=null, canAnswer=true;
+let quizActive=false, showQuestionTimeout=null;
+
+function buildQuestionPool(){
+  let pool=[];
+  const isHigh = cfg.range==='high';
+  const isLow  = cfg.range==='low';
+  const is2oct = cfg.oct==='2';
+
+  if(isHigh){
+    pool = pool.concat(NOTES_TREBLE.filter(n=>{
+      if(!is2oct) return ['C4','D4','E4','F4','G4','A4','B4','C5'].includes(n.n);
+      return true;
+    }));
+  }
+  if(isLow){
+    pool = pool.concat(NOTES_BASS.filter(n=>{
+      if(!is2oct) return ['C3','D3','E3','F3','G3','A3','B3','C4'].includes(n.n);
+      return true;
+    }));
+  }
+  return pool;
+}
+
+function shuffle(arr){ return arr.sort(()=>Math.random()-.5); }
+
+function startQuiz(){
+  const pool = buildQuestionPool();
+  const total = parseInt(cfg.qcount);
+  // 문제 생성: pool에서 랜덤 선택 (반복 허용)
+  questions=[];
+  let lastNote = null;
+  for(let i=0;i<total;i++){
+    let pick, tries=0;
+    do { pick=pool[Math.floor(Math.random()*pool.length)]; tries++; }
+    while(pick.n===lastNote && tries<20 && pool.length>1);
+    questions.push(pick);
+    lastNote = pick.n;
+  }
+  qIdx=0; score=0; canAnswer=true; usedPause=false; quizActive=true;
+
+  // 건반 범위 설정
+  const isHigh2 = cfg.range==='high';
+  const isLow2  = cfg.range==='low';
+  const is2oct2 = cfg.oct==='2';
+  let kbMin, kbMax;
+  if(isHigh2 && !isLow2){
+    kbMin = 'C4'; kbMax = is2oct2 ? 'B5' : 'C5';
+  } else if(isLow2 && !isHigh2){
+    kbMin = is2oct2 ? 'C2' : 'C3'; kbMax = 'C4';
+  } else {
+    kbMin = is2oct2 ? 'C2' : 'C3'; kbMax = is2oct2 ? 'B5' : 'C5';
+  }
+  // 먼저 화면 전환 후 건반 빌드 (clientWidth 계산을 위해)
+  document.getElementById('phase-settings').style.display='none';
+  document.getElementById('phase-result').style.display='none';
+  document.getElementById('phase-quiz').style.display='flex';
+
+  if(cfg.answerMode==='piano'){
+    document.getElementById('answer-piano').style.display='';
+    document.getElementById('answer-buttons').style.display='none';
+    // DOM 렌더링 후 건반 빌드 (clientWidth 확보)
+    requestAnimationFrame(()=> requestAnimationFrame(()=>{
+      buildKb(kbMin, kbMax);
+    }));
+  } else {
+    document.getElementById('answer-piano').style.display='none';
+    document.getElementById('answer-buttons').style.display='';
+  }
+  showQuestion();
+}
+
+function showQuestion(){
+  if(!quizActive) return;
+  if(qIdx>=questions.length){ endQuiz(); return; }
+  canAnswer=false;
+  clearInterval(timerInterval);
+  // 0.2초 공백: SVG 비우기
+  const svg=document.getElementById('quiz-staff');
+  svg.innerHTML='';
+  document.getElementById('q-progress').textContent='';
+  clearTimeout(showQuestionTimeout);
+  showQuestionTimeout = setTimeout(()=>{
+    if(!quizActive) return;
+    if(qIdx>=questions.length){ endQuiz(); return; }
+    canAnswer=true;
+    const nd=questions[qIdx];
+    const total=questions.length;
+    document.getElementById('q-progress').textContent=`(${qIdx+1}/${total})`;
+    drawStaff(nd);
+    // 기준 도 건반 하이라이트 (항상 고정)
+    // 높은 음자리표 → C4, 낮은 음자리표 → C3
+    document.querySelectorAll('.key').forEach(k=>k.classList.remove('ref-do'));
+    const refKeyNote = (nd.clef==='treble') ? 'C4' : 'C3';
+    const refKeyEl = document.querySelector(`[data-note="${refKeyNote}"]`);
+    if(refKeyEl) refKeyEl.classList.add('ref-do');
+    // 타이머
+    timeLeft = diffTime[cfg.diff];
+    document.getElementById('timer-num').textContent=timeLeft;
+    timerInterval = setInterval(()=>{
+    if(isPaused) return;  // 일시정지 중엔 무시
+    timeLeft--;
+    document.getElementById('timer-num').textContent=timeLeft;
+    if(timeLeft<=0){ clearInterval(timerInterval); timeUp(); }
+    },1000);
+  },200);
+}
+
+function timeUp(){
+  if(!canAnswer) return;
+  canAnswer=false;
+  const nd=questions[qIdx];
+  showFeedback(false,`시간 초과! 정답은 '${nd.k}'입니다.`);
+  setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
+}
+
+function onNoteBtn(noteName){
+  if(!canAnswer) return;
+  if(document.getElementById('phase-quiz').style.display==='none') return;
+  // 큰 버튼 모드: 계이름만 비교
+  canAnswer=false;
+  clearInterval(timerInterval);
+  const nd=questions[qIdx];
+  // 문제 음표의 주파수로 소리 재생 (오선지와 일치)
+  playNote(nd.f);
+  if(noteName===nd.k){
+    score++;
+    showFeedback(true,'정답! ✓');
+    setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1000);
+  } else {
+    showFeedback(false,`땡! 정답은 '${nd.k}'입니다.`);
+    setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
+  }
+}
+
+function onKey(keyNote){
+  if(!canAnswer) return;
+  // 시험 중이 아니면 그냥 소리만
+  if(document.getElementById('phase-quiz').style.display==='none'){ playNote(keyNote.f); return; }
+  playNote(keyNote.f);
+  canAnswer=false;
+  clearInterval(timerInterval);
+  const nd=questions[qIdx];
+  // 정답 판별: 같은 계이름(k)이면 정답
+  if(keyNote.k===nd.k){
+    score++;
+    showFeedback(true,'정답! ✓');
+    setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1000);
+  } else {
+    showFeedback(false,`땡! 정답은 '${nd.k}'입니다.`);
+    setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
+  }
+}
+
+function showFeedback(ok,msg){
+  const box=document.getElementById('feedback-box');
+  const ov=document.getElementById('feedback-overlay');
+  box.textContent=msg;
+  box.className=ok?'correct':'wrong';
+  ov.style.display='flex';
+}
+function hideFeedback(){
+  document.getElementById('feedback-overlay').style.display='none';
+}
+
+function endQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById('phase-settings').style.display='none';
+  document.getElementById('phase-quiz').style.display='none';
+  document.getElementById('phase-result').style.display='flex';
+  const total=questions.length, pct=total>0?Math.round(score/total*100):0;
+  let emoji,msg;
+  if(pct<=50)      { emoji='😓'; msg='갈 길이 멀군요. 파이팅!'; }
+  else if(pct<=70) { emoji='🙂'; msg='연습이 조금 더 필요합니다.'; }
+  else if(pct<=80) { emoji='😊'; msg='그럭저럭 읽을 수 있겠군요.'; }
+  else if(pct<=90) { emoji='😄'; msg='나쁘지 않아요.'; }
+  else             { emoji='🏆'; msg='훌륭합니다!'; }
+  document.getElementById('result-emoji').textContent=emoji;
+  document.getElementById('result-msg').textContent=msg;
+  document.getElementById('result-score').textContent=`${total}문제 중 ${score}개 정답`;
+  document.getElementById('result-pct').textContent=`${pct}%`;
+  // 설정 요약
+  const rangeLabel  = cfg.range==='high' ? '높은 음자리표' : '낮은 음자리표';
+  const octLabel    = cfg.oct==='1' ? '한 옥타브' : '두 옥타브';
+  const ansLabel    = cfg.answerMode==='piano' ? '피아노 건반' : '큰 버튼';
+  const pauseLabel = usedPause ? ' · ⏸ 일시정지 사용함' : '';
+  document.getElementById('result-summary').textContent=`${rangeLabel} · ${octLabel} · ${ansLabel}${pauseLabel}`;
+}
+
+let isPaused = false;
+let usedPause = false;
+
+function togglePause(){
+  if(isPaused){
+    // 이어서 하기
+    isPaused = false;
+    document.getElementById('btn-pause').textContent='⏸ 일시정지';
+    document.getElementById('btn-pause').style.background='#e67e22';
+    // 타이머 재시작 (기존 interval 클리어 후)
+    clearInterval(timerInterval);
+    if(timeLeft > 0){
+      timerInterval = setInterval(()=>{
+        if(isPaused) return;
+        timeLeft--;
+        document.getElementById('timer-num').textContent=timeLeft;
+        if(timeLeft<=0){ clearInterval(timerInterval); timeUp(); }
+      },1000);
+    }
+    canAnswer=true;
+  } else {
+    // 일시정지
+    isPaused = true;
+    usedPause = true;
+    clearInterval(timerInterval);
+    canAnswer=false;
+    document.getElementById('btn-pause').textContent='▶ 이어서 하기';
+    document.getElementById('btn-pause').style.background='#27ae60';
+  }
+}
+
+function goHome(){
+  // 완전 초기화: 타이머, 피드백, 상태, UI 모두 리셋
+  clearInterval(timerInterval);
+  clearTimeout(showQuestionTimeout);
+  timerInterval = null;
+  showQuestionTimeout = null;
+  quizActive = false;
+  isPaused = false;
+  usedPause = false;
+  canAnswer = false;
+  questions = [];
+  qIdx = 0;
+  score = 0;
+  timeLeft = 0;
+  // 일시정지 버튼 UI 리셋
+  const btnP = document.getElementById('btn-pause');
+  if(btnP){ btnP.textContent='⏸ 일시정지'; btnP.style.background='#e67e22'; }
+  hideFeedback();
+  document.querySelectorAll('.key').forEach(k=>k.classList.remove('ref-do'));
+  // 결과 내용 초기화
+  document.getElementById('result-emoji').textContent='';
+  document.getElementById('result-msg').textContent='';
+  document.getElementById('result-score').textContent='';
+  document.getElementById('result-pct').textContent='';
+  document.getElementById('result-summary').textContent='';
+  // 화면 전환
+  document.getElementById('phase-quiz').style.display='none';
+  document.getElementById('phase-result').style.display='none';
+  document.getElementById('phase-settings').style.display='flex';
+}
+
+function retryQuiz(){
+  // 같은 설정으로 재도전: goHome 초기화 후 바로 startQuiz
+  clearInterval(timerInterval);
+  clearTimeout(showQuestionTimeout);
+  timerInterval = null;
+  showQuestionTimeout = null;
+  quizActive = false;
+  isPaused = false;
+  usedPause = false;
+  canAnswer = false;
+  questions = [];
+  qIdx = 0;
+  score = 0;
+  timeLeft = 0;
+  const btnP = document.getElementById('btn-pause');
+  if(btnP){ btnP.textContent='⏸ 일시정지'; btnP.style.background='#e67e22'; }
+  hideFeedback();
+  document.getElementById('phase-result').style.display='none';
+  startQuiz();
+}
+
+// ══ SVG 오선지 그리기 ══
+function se(p,tag,attrs){
+  const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  for(const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+  p.appendChild(el); return el;
+}
+
+const TREBLE_CLEF = '\u{1D11E}';
+const BASS_CLEF   = '\u{1D122}';
+
+// 높은 음자리표 파라미터
+// 5선: y = line1y - i*lineGap (i=0..4)
+// step=0 → E4 (1번 줄), step=2 → G4, step=4 → B4, step=6 → D5...
+// step=-2 → C4 (아래 덧줄), step=5 → C5 (위 덧줄)
+// ny = line1y - step*halfGap
+
+function drawStaff(nd){
+  const svg=document.getElementById('quiz-staff');
+  svg.innerHTML='';
+  const W=360,H=210,line1y=155,lineGap=18,halfGap=9;
+  const isBass = nd.clef==='bass';
+
+  // 배경
+  se(svg,'rect',{width:W,height:H,fill:'#fdf6e3',rx:8});
+
+  // 5선
+  for(let i=0;i<5;i++){
+    const y=line1y-i*lineGap;
+    se(svg,'line',{x1:10,x2:W-10,y1:y,y2:y,stroke:'#8b3a1a','stroke-width':1.6});
+  }
+  // 세로 시작/끝 줄
+  se(svg,'line',{x1:10,x2:10,y1:line1y-4*lineGap,y2:line1y,stroke:'#8b3a1a','stroke-width':2});
+  se(svg,'line',{x1:W-10,x2:W-10,y1:line1y-4*lineGap,y2:line1y,stroke:'#8b3a1a','stroke-width':2.5});
+  se(svg,'line',{x1:W-15,x2:W-15,y1:line1y-4*lineGap,y2:line1y,stroke:'#8b3a1a','stroke-width':1.2});
+
+  // 음자리표
+  const clefEl=document.createElementNS('http://www.w3.org/2000/svg','text');
+  if(isBass){
+    clefEl.setAttribute('x','8');
+    clefEl.setAttribute('y',String(line1y-lineGap*1.5+20));
+    clefEl.setAttribute('font-size','90');
+  } else {
+    clefEl.setAttribute('x','4');
+    clefEl.setAttribute('y',String(line1y+lineGap*0.6-10));
+    clefEl.setAttribute('font-size','125');
+  }
+  clefEl.setAttribute('fill','#8b1a1a');
+  clefEl.setAttribute('font-family','serif');
+  clefEl.textContent = isBass ? BASS_CLEF : TREBLE_CLEF;
+  svg.appendChild(clefEl);
+
+  // 음표 위치
+  const step=nd.s, nx=270, ny=line1y-step*halfGap, r=9;
+
+  // 덧줄
+  function drawLedger(st){
+    se(svg,'line',{x1:nx-r-6,x2:nx+r+6,y1:line1y-st*halfGap,y2:line1y-st*halfGap,stroke:'#8b3a1a','stroke-width':1.8});
+  }
+  // 5선 밖 덧줄: 짝수 step(선 위치)에만 그림
+  // 높은 음자리표: step 0=1선, 2=2선, 4=3선(아님 4선)... 실제로 1선=step0
+  // 아래 덧줄: step<0, 위 덧줄: step>8
+  // 아래 덧줄: step<=-2 (짝수 위치마다)
+  if(step<=-2){ for(let st=-2;st>=step;st-=2) drawLedger(st); }
+  // 위 덧줄: step>=10 (짝수 위치마다)
+  if(step>=10){ for(let st=10;st<=step;st+=2) drawLedger(st); }
+  // C4(step=-2) 아래 덧줄만 (낮은 음자리표 C4=step12 위 덧줄)
+
+  // 기준 도 고정 표시:
+  // 높은 음자리표 → C4 (s=-2, 아래 덧줄)
+  // 낮은 음자리표 → C3 (s=3, 2-3선 사이)
+  const refStep = isBass ? 3 : -2;
+  const refNx   = 120; // 기준도 x 위치 (문제음 왼쪽)
+  const refNy   = line1y - refStep * halfGap;
+  // C4(높은, s=-2): 아래 덧줄 필요
+  if(!isBass && refStep <= -2){
+    for(let st=refStep; st<=-2; st+=2){
+      se(svg,'line',{x1:refNx-r-6,x2:refNx+r+6,
+        y1:line1y-st*halfGap, y2:line1y-st*halfGap,
+        stroke:'#8b3a1a','stroke-width':1.8});
+    }
+  }
+  // C3(낮은, s=3): 선 사이라 덧줄 불필요
+  se(svg,'ellipse',{cx:refNx,cy:refNy,rx:r+1,ry:r-1,
+    fill:'#f1c40f',stroke:'#e67e22','stroke-width':1.5,
+    transform:`rotate(-15,${refNx},${refNy})`});
+
+  // 음표 머리 (흰 음표 = 온음표 스타일)
+  se(svg,'ellipse',{cx:nx,cy:ny,rx:r+1,ry:r-1,fill:'#8b1a1a',transform:`rotate(-15,${nx},${ny})`});
+
+  // 기둥
+  const stemUp = step<5;
+  if(stemUp) se(svg,'line',{x1:nx+r,x2:nx+r,y1:ny,y2:ny-48,stroke:'#8b1a1a','stroke-width':2.5});
+  else       se(svg,'line',{x1:nx-r,x2:nx-r,y1:ny,y2:ny+48,stroke:'#8b1a1a','stroke-width':2.5});
+
+  
+}
+
+// 전역 안전망
+window.addEventListener('pointerup',   ()=>{});
+window.addEventListener('pointercancel',()=>{});
+document.getElementById('piano-keyboard').addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
+document.getElementById('piano-keyboard').addEventListener('touchmove', e=>e.preventDefault(),{passive:false});
+</script>
+</body>
+</html>
