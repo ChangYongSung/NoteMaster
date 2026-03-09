@@ -89,20 +89,20 @@ h1 span { color:#f39c12; }
 /* 문제 카드 */
 .question-card {
   background:#fdf6e3; border:3px solid #c8b89a; border-radius:14px;
-  padding:10px 14px; flex:1.52;
+  padding:10px 8px; flex:1;
   display:flex; flex-direction:column; align-items:center; gap:6px;
-  min-height:162px;
+  min-height:162px; min-width:0;
 }
 .q-label {
   font-size:1.5rem; color:#888; font-weight:bold;
 }
 .q-num { color:#c0392b; }
-svg#quiz-staff { display:block; }
+svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
 
 /* 타이머 카드 */
 .timer-card {
   background:#fff; border:3px solid #ddd; border-radius:14px;
-  padding:10px 12px; flex:0.9; display:flex; flex-direction:column;
+  padding:10px 12px; flex:0 0 160px; display:flex; flex-direction:column;
   align-items:center; justify-content:center; gap:4px;
   min-height:162px;
 }
@@ -112,6 +112,12 @@ svg#quiz-staff { display:block; }
   font-size:7rem; color:#1a1a1a; line-height:1;
 }
 #timer-unit { font-size:2rem; color:#555; }
+@media (max-width:480px) {
+  .timer-card { flex:0 0 90px; padding:8px; }
+  .timer-label { font-size:1.1rem; }
+  #timer-num { font-size:4.5rem; }
+  #timer-unit { font-size:1.4rem; }
+}
 
 /* 피드백 오버레이 */
 #feedback-overlay {
@@ -971,7 +977,14 @@ function drawStaff(nd){
 window.addEventListener('pointerup',   ()=>{});
 window.addEventListener('pointercancel',()=>{});
 document.getElementById('piano-keyboard').addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
-document.getElementById('piano-keyboard').addEventListener('touchmove', e=>e.preventDefault(),{passive:false});
+document.getElementById('piano-keyboard').addEventListener('touchmove', e=>{
+  // 스크롤바 영역(하단 20px)에서의 터치는 허용
+  const area = e.currentTarget.parentElement;
+  const touch = e.touches[0];
+  const rect = area.getBoundingClientRect();
+  if(touch.clientY > rect.bottom - 24) return;
+  e.preventDefault();
+},{passive:false});
 </script>
 </body>
 </html>
