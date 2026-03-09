@@ -253,8 +253,8 @@ svg#quiz-staff { display:block; }
         <div class="setting-label">문제의 수</div>
         <div class="btn-group-row" style="justify-content:flex-start;">
           <button class="opt-btn"        id="q-10" onclick="setSetting('qcount','10')">10문제</button>
-          <button class="opt-btn"        id="q-15" onclick="setSetting('qcount','15')">15문제</button>
-          <button class="opt-btn active" id="q-20" onclick="setSetting('qcount','20')">20문제</button>
+          <button class="opt-btn active" id="q-15" onclick="setSetting('qcount','15')">15문제</button>
+          <button class="opt-btn"        id="q-20" onclick="setSetting('qcount','20')">20문제</button>
         </div>
       </div>
       <div class="setting-row">
@@ -372,7 +372,7 @@ function playNote(freq){
 }
 
 // ══ 설정 상태 ══
-const cfg = { range:'high', oct:'1', qcount:'20', diff:'normal', answerMode:'button' };
+const cfg = { range:'high', oct:'1', qcount:'15', diff:'normal', answerMode:'button' };
 const diffTime = {beginner:8, easy:6, normal:4, hard:3};
 
 function setSetting(key, val){
