@@ -280,7 +280,7 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
     </div>
   </div>
   <button class="start-btn" onclick="startQuiz()">🎹 시작!</button>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 1.8</div>
+  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 1.9</div>
 </div>
 
 <!-- ══ 2단계: 시험 ══ -->
@@ -716,7 +716,7 @@ function timeUp(){
   if(!canAnswer) return;
   canAnswer=false;
   const nd=questions[qIdx];
-  showFeedback(false,`시간 초과! 정답은 '${nd.k}'입니다.`);
+  showFeedback(false,`시간 초과! 정답은 '${getNoteLabel(nd)}'입니다.`);
   setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
 }
 
@@ -739,6 +739,31 @@ function onNoteBtn(noteName){
   }
 }
 
+function getNoteLabel(noteObj){
+  // 두 옥타브 + 건반 조합일 때만 높은/낮은 접두어 붙임
+  if(cfg.oct==='2' && cfg.answerMode==='piano'){
+    const octave = parseInt(noteObj.n.slice(-1));
+    const baseName = noteObj.n[0]; // 'C', 'D', 'E' ...
+    if(cfg.range==='high'){
+      // 높은음자리표: 4옥타브=낮은, 5옥타브=높은
+      const prefix = octave <= 4 ? '낮은 ' : '높은 ';
+      return prefix + noteObj.k;
+    } else if(cfg.range==='low'){
+      // 낮은음자리표 두 옥타브 (C2~C4)
+      // 도(C)만 3단계: C2=낮은, C3=중간, C4=높은
+      // 나머지: 2옥타브(C2~B2 사이)=낮은, 3옥타브(C3~B3 사이)=높은
+      if(baseName === 'C'){
+        const prefix = octave <= 2 ? '낮은 ' : octave === 3 ? '중간 ' : '높은 ';
+        return prefix + noteObj.k;
+      } else {
+        const prefix = octave <= 2 ? '낮은 ' : '높은 ';
+        return prefix + noteObj.k;
+      }
+    }
+  }
+  return noteObj.k;
+}
+
 function onKey(keyNote){
   if(!canAnswer) return;
   // 시험 중이 아니면 그냥 소리만
@@ -747,13 +772,13 @@ function onKey(keyNote){
   canAnswer=false;
   clearInterval(timerInterval);
   const nd=questions[qIdx];
-  // 정답 판별: 같은 계이름(k)이면 정답
-  if(keyNote.k===nd.k){
+  // 정답 판별: 음표명(옥타브 포함, 예: D4 vs D5)으로 비교
+  if(keyNote.n===nd.n){
     score++;
     showFeedback(true,'정답! ✓');
     setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1000);
   } else {
-    showFeedback(false,`땡! 정답은 '${nd.k}'입니다.`);
+    showFeedback(false,`땡! 정답은 '${getNoteLabel(nd)}'입니다.`);
     setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
   }
 }
