@@ -519,9 +519,9 @@ function buildKb(minNote, maxNote){
     const lbl=document.createElement('div');
     lbl.className='key-label'; lbl.textContent=n.k;
     el.appendChild(lbl);
-    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); onKey(n); });
-    el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); });
-    el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); });
+    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
+    el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
+    el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
     kb.appendChild(el);
   });
   kb.style.position='relative';
@@ -531,9 +531,9 @@ function buildKb(minNote, maxNote){
     const el=document.createElement('div');
     el.className='key black'; el.dataset.note=n.n;
     el.style.left=(li*WW+WW-16)+'px'; el.style.top='0';
-    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); onKey(n); });
-    el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); });
-    el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); });
+    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
+    el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
+    el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
     kb.appendChild(el);
   });
   // 컨테이너 너비에 맞게 건반 크기 동적 계산
@@ -559,6 +559,19 @@ function buildKb(minNote, maxNote){
     el.style.width = dynBW+'px';
   });
   kb.style.width = (numWhite*dynWW)+'px';
+
+  // 넘칠 때만 스크롤바 표시
+  const keyArea = kb.parentElement;
+  setTimeout(()=>{
+    const kbW = numWhite * dynWW;
+    const areaW = keyArea.getBoundingClientRect().width;
+    if(kbW > areaW + 1){
+      keyArea.style.overflow = 'hidden';
+      keyArea.style.overflowX = 'auto';
+    } else {
+      keyArea.style.overflow = 'hidden';
+    }
+  }, 50);
 }
 
 // 초기 건반 (기본: 높은음 1옥타브 C4~C5)
