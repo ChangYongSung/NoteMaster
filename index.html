@@ -146,11 +146,11 @@ svg#quiz-staff { display:block; }
   touch-action:pan-x; -webkit-user-select:none; user-select:none;
   padding-bottom:8px;
 }
-.piano-key-area::-webkit-scrollbar { height:14px; }
-.piano-key-area::-webkit-scrollbar-track { background:#222; border-radius:7px; }
-.piano-key-area::-webkit-scrollbar-thumb { background:#888; border-radius:7px; border:2px solid #222; }
-.piano-key-area::-webkit-scrollbar-thumb:hover { background:#aaa; }
-.piano-key-area { scrollbar-width:auto; scrollbar-color:#888 #222; }
+.piano-key-area::-webkit-scrollbar { height:20px; }
+.piano-key-area::-webkit-scrollbar-track { background:#222; border-radius:10px; }
+.piano-key-area::-webkit-scrollbar-thumb { background:#999; border-radius:10px; border:3px solid #222; min-width:60px; }
+.piano-key-area::-webkit-scrollbar-thumb:hover { background:#bbb; }
+.piano-key-area { scrollbar-width:auto; scrollbar-color:#999 #222; }
 #piano-keyboard { position:relative; display:flex; height:130px; min-width:max-content; }
 .key.white {
   width:52px; height:124px; background:#fff;
@@ -573,8 +573,10 @@ function buildKb(minNote, maxNote){
     if(kbW > areaW + 1){
       keyArea.style.overflow = 'hidden';
       keyArea.style.overflowX = 'auto';
+      keyArea.style.paddingBottom = '4px';
     } else {
       keyArea.style.overflow = 'hidden';
+      keyArea.style.paddingBottom = '8px';
     }
   }, 50);
 }
