@@ -48,13 +48,13 @@ h1 span { color:#f39c12; }
 
 .setting-row { display:flex; flex-direction:column; gap:8px; }
 .setting-label {
-  font-size:1.26rem; font-weight:bold; color:#7b2d2d;
+  font-size:1.70rem; font-weight:bold; color:#7b2d2d;
   padding-left:2px; border-left:4px solid var(--red); padding-left:10px;
 }
 .btn-group-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
 .opt-btn {
-  font-family:'Jua',sans-serif; font-size:1rem;
-  padding:8px 20px; border:2px solid #ccc; border-radius:10px;
+  font-family:'Jua',sans-serif; font-size:1.35rem;
+  padding:6px 15px; border:2px solid #ccc; border-radius:10px;
   background:#fff; color:#555; cursor:pointer;
   transition:all .15s;
   -webkit-tap-highlight-color:transparent;
@@ -67,8 +67,8 @@ h1 span { color:#f39c12; }
 .opt-btn:hover:not(.active) { border-color:#e74c3c; color:#c0392b; }
 
 .start-btn {
-  font-family:'Jua',sans-serif; font-size:1.3rem;
-  padding:14px 48px; border:none; border-radius:14px;
+  font-family:'Jua',sans-serif; font-size:1.76rem;
+  padding:21px 72px; border:none; border-radius:14px;
   background:linear-gradient(135deg,#c0392b,#e74c3c);
   color:#fff; cursor:pointer; align-self:center; margin-top:8px;
   box-shadow:0 4px 16px rgba(192,57,43,.5);
@@ -268,11 +268,13 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
           <button class="opt-btn"        id="q-20" onclick="setSetting('qcount','20')">20문제</button>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row" style="margin-top:18px;">
         <div class="setting-label">난이도</div>
         <div class="btn-group-row" style="justify-content:flex-start;">
           <button class="opt-btn"        id="diff-beginner" onclick="setSetting('diff','beginner')">초보 (8초)</button>
           <button class="opt-btn"        id="diff-easy"   onclick="setSetting('diff','easy')">관대 (6초)</button>
+        </div>
+        <div class="btn-group-row" style="justify-content:flex-start;">
           <button class="opt-btn active" id="diff-normal" onclick="setSetting('diff','normal')">진지 (4초)</button>
           <button class="opt-btn"        id="diff-hard"   onclick="setSetting('diff','hard')">엄격 (3초)</button>
         </div>
@@ -280,7 +282,7 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
     </div>
   </div>
   <button class="start-btn" onclick="startQuiz()">🎹 시작!</button>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 1.9</div>
+  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 1.91</div>
 </div>
 
 <!-- ══ 2단계: 시험 ══ -->
