@@ -282,7 +282,7 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
     </div>
   </div>
   <button class="start-btn" onclick="startQuiz()">🎹 시작!</button>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 1.91</div>
+  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 2.0</div>
 </div>
 
 <!-- ══ 2단계: 시험 ══ -->
@@ -342,34 +342,32 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
 </div>
 
 <script>
-// ══ 오디오 ══
-const actx = new (window.AudioContext||window.webkitAudioContext)();
-const mGain = actx.createGain(); mGain.gain.value=0.6; mGain.connect(actx.destination);
+// ══ 오디오 (iOS Safari: lazy init) ══
+let actx = null;
+let mGain = null;
 
-// 첫 터치시 오디오 엔진 워밍업
-// 오디오 워밍업: 페이지 로드 즉시 + 첫 터치 시 이중 보장
-async function warmupAudio(){
+function ensureAudioCtx(){
+  if(actx) return;
+  actx = new (window.AudioContext||window.webkitAudioContext)();
+  mGain = actx.createGain(); mGain.gain.value=0.6; mGain.connect(actx.destination);
+}
+
+// iOS: AudioContext는 사용자 제스처(touchstart/pointerdown) 안에서 생성 & resume 해야 함
+function unlockAudio(){
+  ensureAudioCtx();
+  if(actx.state==='suspended') actx.resume();
+  // 무음 버퍼를 한 번 재생해 iOS unlock
   try {
-    if(actx.state==='suspended') await actx.resume();
-    const now=actx.currentTime;
-    // 여러 음색 미리 생성해 파이프라인 초기화
-    for(let i=0;i<3;i++){
-      const o=actx.createOscillator(), g=actx.createGain();
-      o.type = ['sine','triangle','square'][i];
-      o.frequency.value = 220+i*110;
-      g.gain.setValueAtTime(0.00001,now); g.gain.linearRampToValueAtTime(0.00001,now+0.5);
-      o.connect(g).connect(actx.destination);
-      o.start(now+i*0.01); o.stop(now+0.5);
-    }
+    const buf=actx.createBuffer(1,1,22050);
+    const src=actx.createBufferSource();
+    src.buffer=buf; src.connect(actx.destination); src.start(0);
   } catch(e){}
 }
-// 첫 터치/클릭 시 워밍업
-window.addEventListener('pointerdown', warmupAudio, {once:true, capture:true});
-window.addEventListener('touchstart',  warmupAudio, {once:true, capture:true, passive:true});
 // 페이지 가시성 변경 시에도 resume (백그라운드→포그라운드)
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && actx.state==='suspended') actx.resume(); });
+document.addEventListener('visibilitychange', ()=>{ if(actx && !document.hidden && actx.state==='suspended') actx.resume(); });
 
 function playNote(freq){
+  ensureAudioCtx();
   if(actx.state==='suspended') actx.resume();
   const now=actx.currentTime, g=actx.createGain(), f=actx.createBiquadFilter();
   const o1=actx.createOscillator(); o1.type='triangle'; o1.frequency.value=freq;
@@ -532,7 +530,7 @@ function buildKb(minNote, maxNote){
     const lbl=document.createElement('div');
     lbl.className='key-label'; lbl.textContent=n.k;
     el.appendChild(lbl);
-    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
+    el.addEventListener('pointerdown',e=>{ unlockAudio(); e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
     el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
     el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
     kb.appendChild(el);
@@ -544,7 +542,7 @@ function buildKb(minNote, maxNote){
     const el=document.createElement('div');
     el.className='key black'; el.dataset.note=n.n;
     el.style.left=(li*WW+WW-16)+'px'; el.style.top='0';
-    el.addEventListener('pointerdown',e=>{ e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
+    el.addEventListener('pointerdown',e=>{ unlockAudio(); e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
     el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
     el.addEventListener('pointercancel',e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
     kb.appendChild(el);
@@ -723,6 +721,7 @@ function timeUp(){
 }
 
 function onNoteBtn(noteName){
+  unlockAudio();
   if(!canAnswer) return;
   if(document.getElementById('phase-quiz').style.display==='none') return;
   // 큰 버튼 모드: 계이름만 비교
@@ -1003,7 +1002,7 @@ function drawStaff(nd){
 // 전역 안전망
 window.addEventListener('pointerup',   ()=>{});
 window.addEventListener('pointercancel',()=>{});
-document.getElementById('piano-keyboard').addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
+document.getElementById('piano-keyboard').addEventListener('touchstart',e=>{ unlockAudio(); e.preventDefault(); },{passive:false});
 document.getElementById('piano-keyboard').addEventListener('touchmove', e=>{
   // 스크롤바 영역(하단 20px)에서의 터치는 허용
   const area = e.currentTarget.parentElement;
