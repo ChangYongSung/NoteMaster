@@ -61,10 +61,10 @@ h1 span { color:#f39c12; }
   touch-action:manipulation;
 }
 .opt-btn.active {
-  background:var(--red); color:#fff; border-color:var(--red);
-  box-shadow:0 2px 8px rgba(192,57,43,.4);
+  background:var(--gold); color:#fff; border-color:var(--gold);
+  box-shadow:0 2px 8px rgba(243,156,18,.4);
 }
-.opt-btn:hover:not(.active) { border-color:#e74c3c; color:#c0392b; }
+.opt-btn:hover:not(.active) { border-color:#f39c12; color:#e67e22; }
 
 .start-btn {
   font-family:'Jua',sans-serif; font-size:1.76rem;
@@ -232,10 +232,10 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
 
 <!-- ══ 1단계: 설정 ══ -->
 <div id="phase-settings" class="card">
-  <h1 style="text-align:center;margin-bottom:16px;">🎵 계이름 <span style='color:#f39c12'>마스터</span></h1>
+  <h1 style="text-align:center;margin-bottom:16px;position:relative;">계이름 <span style='color:#f39c12'>마스터</span><span style="position:absolute;margin-left:0.3em;"> 🎵</span></h1>
   <div style="display:flex;gap:24px;flex-wrap:wrap;">
     <!-- 왼쪽: 연습할 계이름 + 계이름 길이 -->
-    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:14px;">
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:22px;">
       <div class="setting-row">
         <div class="setting-label">연습할 계이름</div>
         <div class="btn-group-row" style="justify-content:flex-start;">
@@ -258,17 +258,17 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
         </div>
       </div>
     </div>
-    <!-- 오른쪽: 문제 수 + 난이도 -->
-    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:14px;">
+    <!-- 오른쪽: 문제 수 + 난이도 + 시작버튼 -->
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px;">
       <div class="setting-row">
         <div class="setting-label">문제의 수</div>
-        <div class="btn-group-row" style="justify-content:flex-start;">
-          <button class="opt-btn"        id="q-10" onclick="setSetting('qcount','10')">10문제</button>
-          <button class="opt-btn active" id="q-15" onclick="setSetting('qcount','15')">15문제</button>
+        <div class="btn-group-row" id="q-row" style="justify-content:flex-start;">
+          <button class="opt-btn active" id="q-10" onclick="setSetting('qcount','10')">10문제</button>
+          <button class="opt-btn"        id="q-15" onclick="setSetting('qcount','15')">15문제</button>
           <button class="opt-btn"        id="q-20" onclick="setSetting('qcount','20')">20문제</button>
         </div>
       </div>
-      <div class="setting-row" style="margin-top:18px;">
+      <div class="setting-row" style="margin-top:6px;">
         <div class="setting-label">난이도</div>
         <div class="btn-group-row" style="justify-content:flex-start;">
           <button class="opt-btn"        id="diff-beginner" onclick="setSetting('diff','beginner')">초보 (8초)</button>
@@ -279,10 +279,10 @@ svg#quiz-staff { display:block; width:100%; max-width:342px; height:auto; }
           <button class="opt-btn"        id="diff-hard"   onclick="setSetting('diff','hard')">엄격 (3초)</button>
         </div>
       </div>
+      <button class="start-btn" id="start-btn" onclick="startQuiz()" style="margin-top:12px;padding:21px 0;font-size:2.11rem;width:250px;align-self:flex-start;">🎹 시작!</button>
     </div>
   </div>
-  <button class="start-btn" onclick="startQuiz()">🎹 시작!</button>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 2.0</div>
+  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:6px;">버전 2.1</div>
 </div>
 
 <!-- ══ 2단계: 시험 ══ -->
@@ -383,7 +383,7 @@ function playNote(freq){
 }
 
 // ══ 설정 상태 ══
-const cfg = { range:'high', oct:'1', qcount:'15', diff:'normal', answerMode:'button' };
+const cfg = { range:'high', oct:'1', qcount:'10', diff:'normal', answerMode:'button' };
 const diffTime = {beginner:8, easy:6, normal:4, hard:3};
 
 function setSetting(key, val){
