@@ -6,6 +6,14 @@
 <title>계이름 마스터</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
 <style>
+/* 음악 기호 전용 폰트 (높은·낮은음자리표) — base64 내장, 오프라인·웨일북 완벽 호환 */
+@font-face {
+  font-family: 'MusicClef';
+  src: url('data:font/woff2;base64,d09GMgABAAAAAATYABAAAAAACLAAAAR9AZxtYwAAAAAAAAAAAAAAAAAAAAAAAAAAGYE8GhYbIByCDB+CCAZgADwREAqDNIMpATYCJAMMCwgABCAFgwwHIBuMByiO0hzySSRmOjkeHuqy3q/qJD2Vgaw1HZyWOIm5msstkqwDAgWImztOsvfB+RhV2TpTWyNqVK7WdCYK2N0FAI35eRkVJz+3ASKdoiNSnbra1BlgErJGVrgKqWrhts2TITd7TEoh8kkCeeRkYv0KUtC+cg0pOF5JasHE1SJfsNCycdI6Gy/YuC7ThGviBQfZmccm4gvOZKPH7hXhgivZQVOhmBc4KJLJWboVdPNpBvqLL3CJyFauDIVEdK8j01hTMXrs6S00y0FFBUCy/V+TaT3+f8VO9KAcikOCF+CVDEeZMhrmKikq4oC8CXA2qkWqjVoJF8P7MBwHqLBLNYqFDy/GLYGzM41Gckh4MXk94GxUB5gSO+RocxAu+CpfhJlaljCuc3GxwEZ1YkjDByyWJAxkGpFjUBgsZOHeUcRBi/j32lpofpHP+czfMMlqUT492WoQE0G8TXIz7iNexOvA6zzEdpA5eTXwN9ADg/Ew3yVpTCwFcT5kf11l2QgESTJ/bo5YD6xeLdsxQwBWLFtYXW2wTE4nZiH7PWfz/w/GalZXa3XlhdcRAlWRdU24k3PJwThfAcmZyXzgdTggTtUjkihIksK0IKcun+YgQQDGTb3r83xF/Na0r6K/1enJ0RUB8WJyKZrriQQ51JbKBK6MrD1DifigafAlxActYfbPlaokUUdUVEhBCgpRhBvxJqAyICftlxU2yLKuq0odL8nOLIsTXjrrGcezO4rPuu2p++KEuTeX+uUPlT83DBiXv+OeCbXZc74xCAcvPSE7s8TxBk+VLzmhLJtTPnvWZs87fsUdt1wStR/9kOX7zW2Klc4w7zvrjuO39+KEu0owRScWrvPEkpLnS94uebx/3cveu+uj58ofKo8TsjNfv/1yx4vPuq34RLGnsxu9GyeUPxBN1o9antD7b/acMLBj05MHTWw8dGyj9tW+qzO1RZ1GJ8xpseLM81a3qjvu1f6j1w/UnTH6eavan51xpPrETtdtX9e75+cqQ2atPMiT337NW/fYMGLi3bkj84ONfsNG9Or8+ZjGC1t2+fqWV5pUezpt9qjd+Xu6dRs4dXCNjVefeHBCiPs9ej1X84yWT1Tv2KXmpZ5vfVbVWlfU6NSl+o/VZmyhs5Ha47oML53Qp/bsLiNHXMD8r59f2Xv4f3Wntb9mW5uemy7OV6udn5tr1KNBk4eatmvSeuT2G9gE7P//46RZerIgrt6y6pJ/fC2rNvi3fLP0O3jpkyWXw8cfTLzi75/+/7D4/PRk5CUgSE/+/0Orix+niP/4YoAQ/1KazDeQTFNNTjJJDdJ0tM341/AZt6uiAEUWqhO5SriVjCPUdKsjUdXjjtREfytzREeBllE9WVh93yhORSFmKFqqT0/ddddTZ0HtRe1D7S8aENhDd2FPGLyuuXHO3ekzVkwQJIek+qxCciLsySY6scTMjOYNQZkkXRMUIg5gan8+wFBMEfsmu5r1Bmq+Sqg6t4deuuiryymbvcyleSYMh5rd9b4J7qr3r/XTSwpUPKCjCAAAAA==') format('woff2');
+  unicode-range: U+1D100-U+1D1FF;
+}
+</style>
+<style>
 :root {
   --red:    #c0392b;
   --red2:   #e74c3c;
@@ -949,7 +957,7 @@ function drawStaff(nd){
     clefEl.setAttribute('font-size','125');
   }
   clefEl.setAttribute('fill','#8b1a1a');
-  clefEl.setAttribute('font-family','serif');
+  clefEl.setAttribute('font-family','MusicClef, serif');
   clefEl.textContent = isBass ? BASS_CLEF : TREBLE_CLEF;
   svg.appendChild(clefEl);
 
