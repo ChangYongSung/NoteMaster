@@ -60,7 +60,7 @@ body {
 
 h1 {
   font-family:'Jua',sans-serif;
-  font-size: clamp(1.89rem, 4.2vw, 3.78rem);
+  font-size: clamp(2.27rem, 5.04vw, 4.54rem);
   letter-spacing:.02em;
   color:#c0392b;
   text-align:center;
@@ -68,17 +68,17 @@ h1 {
 }
 h1 span { color:#f39c12; }
 
-.setting-row { display:flex; flex-direction:column; gap:6px; }
+.setting-row { display:flex; flex-direction:column; gap:4px; }
 .setting-label {
-  font-size: 1.65rem;
+  font-size: 1.38rem;
   font-weight:bold; color:#7b2d2d;
   border-left:4px solid var(--red); padding-left:10px;
 }
-.btn-group-row { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-group-row { display:flex; gap:6px; flex-wrap:wrap; }
 .opt-btn {
   font-family:'Jua',sans-serif;
   font-size: 1.18rem;
-  padding: 5px 14px; border:2px solid #ccc; border-radius:10px;
+  padding: 2px 10px; border:2px solid #ccc; border-radius:10px;
   background:#fff; color:#555; cursor:pointer;
   transition:all .15s;
   -webkit-tap-highlight-color:transparent;
@@ -96,6 +96,133 @@ h1 span { color:#f39c12; }
   text-decoration: line-through;
 }
 
+/* ══ 난이도 슬라이더 ══ */
+.diff-slider-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 2px;
+}
+.diff-slider-track {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.diff-slider-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 6px;
+  background: #ddd;
+  border-radius: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.diff-slider-fill {
+  position: absolute;
+  left: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #27ae60, #a8d520, #f39c12, #e74c3c, #c0392b);
+  border-radius: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: width .15s;
+}
+input.diff-slider {
+  position: absolute;
+  left: 0; right: 0;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 36px;
+  margin: 0;
+  cursor: pointer;
+  z-index: 2;
+  transform: scaleX(-1);
+}
+input.diff-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--thumb-color, #27ae60);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  cursor: grab;
+}
+input.diff-slider::-moz-range-thumb {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--thumb-color, #27ae60);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  cursor: grab;
+}
+input.diff-slider:active::-webkit-slider-thumb { cursor: grabbing; }
+input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
+
+.diff-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+.diff-tick {
+  font-family: 'Jua', sans-serif;
+  font-size: 0.82rem;
+  color: #888;
+  text-align: center;
+  min-width: 20px;
+  transition: color .15s, font-weight .15s;
+}
+.diff-tick.active-tick {
+  color: #c0392b;
+  font-weight: bold;
+}
+.diff-cur-label {
+  font-family: 'Jua', sans-serif;
+  font-size: 1rem;
+  color: #7b2d2d;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ══ 토글 스위치 ══ */
+.toggle-switch {
+  position: relative;
+  width: 38px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0; height: 0;
+  position: absolute;
+}
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background .25s;
+}
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  width: 14px; height: 14px;
+  left: 3px; top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+  transition: transform .25s;
+}
+.toggle-switch input:checked + .toggle-track {
+  background: #90d98a;
+}
+.toggle-switch input:checked + .toggle-track::after {
+  transform: translateX(18px);
+}
+
 /* 설정 행 2열 레이아웃 */
 .settings-cols {
   display: flex;
@@ -107,7 +234,7 @@ h1 span { color:#f39c12; }
   min-width: 200px;
   display: flex;
   flex-direction: column;
-  gap: 1.2vh;
+  gap: 0.8vh;
 }
 
 .start-btn {
@@ -377,7 +504,7 @@ h1 span { color:#f39c12; }
   flex-shrink: 1;
 }
 .duel-q-label {
-  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-size: clamp(1.3rem, 2.6vw, 1.82rem);
   color: #444;
   font-weight: bold;
 }
@@ -406,7 +533,7 @@ h1 span { color:#f39c12; }
   font-family: 'Jua', sans-serif;
   font-size: clamp(1.5rem, 3.2vw, 2.4rem);
   aspect-ratio: auto;
-  height: 70px;
+  height: 77px;
   width: 100%;
   border: none;
   border-radius: 10px;
@@ -601,7 +728,10 @@ h1 span { color:#f39c12; }
 
 <!-- ══ 1단계: 설정 ══ -->
 <div id="phase-settings">
-  <h1>계이름 <span>마스터</span> 🎵</h1>
+  <div style="display:flex; align-items:baseline; justify-content:center; gap:10px;">
+    <h1>계이름 <span>마스터</span> 🎵</h1>
+    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.5</span>
+  </div>
 
   <div class="settings-cols">
     <!-- 왼쪽 -->
@@ -613,21 +743,21 @@ h1 span { color:#f39c12; }
           <button class="opt-btn"        id="range-low"  onclick="setSetting('range','low')">낮은 음자리표</button>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row" style="margin-top:10px;">
         <div class="setting-label">계이름의 범위</div>
         <div class="btn-group-row">
           <button class="opt-btn active" id="oct-1" onclick="setSetting('oct','1')">한 옥타브</button>
           <button class="opt-btn"        id="oct-2" onclick="setSetting('oct','2')">두 옥타브</button>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row" style="margin-top:10px;">
         <div class="setting-label">정답 입력 방식</div>
         <div class="btn-group-row">
-          <button class="opt-btn"        id="ans-piano"  onclick="setSetting('answerMode','piano')">🎹 피아노 건반</button>
-          <button class="opt-btn active" id="ans-button" onclick="setSetting('answerMode','button')">🎵 큰 버튼</button>
+          <button class="opt-btn"        id="ans-piano"  onclick="setSetting('answerMode','piano')">피아노 건반</button>
+          <button class="opt-btn active" id="ans-button" onclick="setSetting('answerMode','button')">큰 버튼</button>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row" style="margin-top:10px;">
         <div class="setting-label">🎮 플레이 인원</div>
         <div class="btn-group-row">
           <button class="opt-btn active" id="mode-1p" onclick="setMode(1)">👤 1인 연습</button>
@@ -652,21 +782,34 @@ h1 span { color:#f39c12; }
           선택한 수만큼 먼저 맞히는 사람이 이기는 게임입니다.
         </div>
       </div>
-      <div class="setting-row" id="difficulty-row">
-        <div class="setting-label">난이도</div>
-        <div class="btn-group-row">
-          <button class="opt-btn"        id="diff-beginner" onclick="setSetting('diff','beginner')">초보 (8초)</button>
-          <button class="opt-btn"        id="diff-easy"   onclick="setSetting('diff','easy')">관대 (6초)</button>
+      <div class="setting-row" id="difficulty-row" style="margin-top:10px;">
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <div class="setting-label">난이도</div>
+          <span id="diff-cur-label" style="font-family:'Jua',sans-serif; font-size:1rem; color:#c0392b; font-weight:bold;">(진지)</span>
         </div>
-        <div class="btn-group-row">
-          <button class="opt-btn active" id="diff-normal" onclick="setSetting('diff','normal')">진지 (4초)</button>
-          <button class="opt-btn"        id="diff-hard"   onclick="setSetting('diff','hard')">엄격 (3초)</button>
+        <div class="diff-slider-wrap">
+          <div class="diff-slider-track">
+            <div class="diff-slider-line"></div>
+            <div class="diff-slider-fill" id="diff-fill"></div>
+            <input class="diff-slider" type="range" id="diff-slider" min="2" max="8" step="1" value="4"
+              oninput="onDiffSlider(this.value)">
+          </div>
+          <div class="diff-ticks" id="diff-ticks"></div>
+        </div>
+      </div>
+      <div class="setting-row" style="margin-top:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="setting-label">🔊 소리</div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="vol-toggle" checked onchange="setVolume(this.checked)">
+            <div class="toggle-track"></div>
+          </label>
         </div>
       </div>
       <button class="start-btn" onclick="startGame()">🎹 시작!</button>
     </div>
   </div>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:4px;">버전 3.3.1</div>
+
 </div>
 
 <!-- ══ 2단계: 1인용 시험 ══ -->
@@ -824,6 +967,7 @@ function unlockAudio(){
 }
 document.addEventListener('visibilitychange', ()=>{ if(actx && !document.hidden && actx.state==='suspended') actx.resume(); });
 function playNote(freq){
+  if(!soundOn) return;
   ensureAudioCtx();
   if(actx.state==='suspended') actx.resume();
   const now=actx.currentTime, g=actx.createGain(), f=actx.createBiquadFilter();
@@ -841,7 +985,98 @@ function playNote(freq){
 
 // ══ 설정 상태 ══
 const cfg = { range:'high', oct:'1', qcount:'10', diff:'normal', answerMode:'button', mode: 1 };
-const diffTime = {beginner:8, easy:6, normal:4, hard:3};
+const diffTime = {8:'beginner', 7:'easy7', 6:'easy6', 5:'easy5', 4:'normal', 3:'hard', 2:'vhard'};
+const diffLabel = {8:'(초보)', 7:'(쉬움)', 6:'(관대)', 5:'(보통)', 4:'(진지)', 3:'(엄격)', 2:'(고수)'};
+let soundOn = true;
+
+// 슬라이더 초기화
+function initDiffSlider(){
+  const ticks = document.getElementById('diff-ticks');
+  ticks.innerHTML = '';
+  // 왼쪽=8초(쉬움), 오른쪽=2초(어려움) → 눈금 8→2
+  for(let s=8; s>=2; s--){
+    const d = document.createElement('div');
+    d.className = 'diff-tick' + (s===4 ? ' active-tick' : '');
+    d.id = 'tick-'+s;
+    d.textContent = s+'초';
+    ticks.appendChild(d);
+  }
+  updateDiffFill(4);
+  document.getElementById('diff-slider').style.setProperty('--thumb-color', '#f39c12');
+}
+
+function updateDiffFill(val){
+  // 슬라이더는 scaleX(-1) 반전이라 val=8이면 시각적으로 왼쪽
+  // 8초(왼쪽)=fill 0%, 2초(오른쪽)=fill 100%
+  const pct = (8 - val) / (8 - 2) * 100;
+  document.getElementById('diff-fill').style.width = pct + '%';
+}
+
+function onDiffSlider(val){
+  val = parseInt(val);
+  cfg.timeLimit = val;
+
+  // thumb 색: 8초=녹색 ~ 2초=빨강 (fill 그라데이션과 동일 구간)
+  const thumbColors = {8:'#27ae60', 7:'#5cb85c', 6:'#a8d520', 5:'#f0c030', 4:'#f39c12', 3:'#e74c3c', 2:'#c0392b'};
+  document.getElementById('diff-slider').style.setProperty('--thumb-color', thumbColors[val]);
+
+  // 틱 강조
+  for(let s=2; s<=8; s++){
+    const t = document.getElementById('tick-'+s);
+    if(t) t.className = 'diff-tick' + (s===val ? ' active-tick' : '');
+  }
+  document.getElementById('diff-cur-label').textContent = diffLabel[val];
+  updateDiffFill(val);
+  if(val===8) cfg.diff='beginner';
+  else if(val===4) cfg.diff='normal';
+  else if(val<=3) cfg.diff='hard';
+  else cfg.diff='normal';
+}
+
+function setVolume(on){
+  soundOn = on;
+  if(mGain) mGain.gain.value = on ? 0.6 : 0;
+  const toggle = document.getElementById('vol-toggle');
+  if(toggle) toggle.checked = on;
+}
+
+// 짜잔 효과음: C장조 으뜸화음 아르페지오 + 찰랑이는 여운
+function playFanfare(){
+  if(!soundOn) return;
+  ensureAudioCtx();
+  if(actx.state==='suspended') actx.resume();
+  const now = actx.currentTime;
+  // 도(C4) 미(E4) 솔(G4) 도(C5) 순서로 아르페지오, 이후 화음 지속
+  const notes = [
+    {f:261.63, t:0.00},
+    {f:329.63, t:0.10},
+    {f:392.00, t:0.20},
+    {f:523.25, t:0.30},
+  ];
+  notes.forEach(({f, t})=>{
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.type = 'triangle';
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, now+t);
+    g.gain.linearRampToValueAtTime(0.35, now+t+0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, now+t+2.2);
+    o.connect(g).connect(mGain);
+    o.start(now+t);
+    o.stop(now+t+2.5);
+  });
+  // 반짝이는 고음 장식
+  const shimmer = actx.createOscillator();
+  const sg = actx.createGain();
+  shimmer.type = 'sine';
+  shimmer.frequency.value = 1046.5; // C6
+  sg.gain.setValueAtTime(0.0001, now+0.32);
+  sg.gain.linearRampToValueAtTime(0.18, now+0.36);
+  sg.gain.exponentialRampToValueAtTime(0.001, now+1.2);
+  shimmer.connect(sg).connect(mGain);
+  shimmer.start(now+0.32);
+  shimmer.stop(now+1.5);
+}
 
 function setSetting(key, val){
   cfg[key] = val;
@@ -1025,7 +1260,7 @@ function showQuestion(){
     const refKeyNote = (nd.clef==='treble') ? 'C4' : 'C3';
     const refKeyEl = document.querySelector(`[data-note="${refKeyNote}"]`);
     if(refKeyEl) refKeyEl.classList.add('ref-do');
-    timeLeft = diffTime[cfg.diff];
+    timeLeft = parseInt(document.getElementById('diff-slider').value);
     document.getElementById('timer-num').textContent=timeLeft;
     timerInterval = setInterval(()=>{
       if(isPaused) return;
@@ -1351,6 +1586,7 @@ function endDuel(winnerPi){
   setTimeout(()=>{
     document.getElementById('phase-duel').style.display='none';
     document.getElementById('phase-duel-result').style.display='flex';
+    playFanfare();
   }, 1000);
 }
 
@@ -1505,6 +1741,7 @@ function buildKb(minNote, maxNote){
 }
 
 buildKb('C4','C5');
+initDiffSlider();
 window.addEventListener('resize', ()=>{
   if(document.getElementById('phase-quiz').style.display!=='none' && cfg.answerMode==='piano'){
     const isHigh = cfg.range==='high';
