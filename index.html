@@ -308,7 +308,7 @@ h1 span { color:#f39c12; }
   flex-direction: column;
   border-radius: 14px;
   overflow: hidden;
-  gap: 4px;
+  gap: 0;
   min-width: 0;
 }
 
@@ -319,7 +319,9 @@ h1 span { color:#f39c12; }
   background: var(--pc);
   color: #fff;
   text-align: center;
-  padding: 0.6vh 0;
+  padding: 0;
+  height: 28px;
+  line-height: 28px;
   border-radius: 10px 10px 0 0;
   flex-shrink: 0;
 }
@@ -335,12 +337,13 @@ h1 span { color:#f39c12; }
   align-items: center;
   justify-content: center;
   gap: 0.5vw;
-  padding: 0.8vh 0;
+  padding: 0;
+  height: 40px;
   flex-shrink: 0;
 }
 .score-current {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   color: #fff;
   line-height: 1;
 }
@@ -360,13 +363,18 @@ h1 span { color:#f39c12; }
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  flex-shrink: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  justify-content: center;
 }
 .duel-staff-wrap svg {
   display: block;
   width: 100%;
   max-width: 340px;
   height: auto;
+  max-height: 100%;
+  flex-shrink: 1;
 }
 .duel-q-label {
   font-size: clamp(0.8rem, 1.4vw, 1.1rem);
@@ -383,29 +391,32 @@ h1 span { color:#f39c12; }
   border-top: none;
   border-radius: 0 0 10px 10px;
   padding: 4px 0.5vw;
-  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .duel-note-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  gap: 4px;
   width: 100%;
 }
 
 .duel-note-btn {
   font-family: 'Jua', sans-serif;
-  font-size: clamp(1.2rem, 2.8vw, 2.2rem);
-  aspect-ratio: 20/17;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  aspect-ratio: auto;
+  height: 44px;
   width: 100%;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #fff;
   cursor: pointer;
   transition: transform .1s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+  padding: 0;
 }
 .p1 .duel-note-btn {
   background: linear-gradient(135deg, #1565c0, #1a6bbf);
@@ -651,7 +662,7 @@ h1 span { color:#f39c12; }
       <button class="start-btn" onclick="startGame()">🎹 시작!</button>
     </div>
   </div>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:4px;">버전 3.3</div>
+  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:4px;">버전 3.3.1</div>
 </div>
 
 <!-- ══ 2단계: 1인용 시험 ══ -->
