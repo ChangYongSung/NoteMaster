@@ -48,9 +48,10 @@ body {
   border-radius: 16px;
   padding: 2vh 2vw;
   box-shadow: var(--shadow);
-  width: calc(100% - 16px);
+  width: fit-content;
   max-width: min(900px, 98vw);
-  margin: 1vh 8px;
+  min-width: min(560px, 98vw);
+  margin: 1vh auto;
   display: flex;
   flex-direction: column;
   gap: 1.2vh;
@@ -102,12 +103,16 @@ h1 span { color:#f39c12; }
   flex-direction: column;
   gap: 4px;
   padding: 4px 2px;
+  width: 100%;
+  max-width: 240px;
+  box-sizing: border-box;
 }
 .diff-slider-track {
   position: relative;
   height: 36px;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 .diff-slider-line {
   position: absolute;
@@ -925,7 +930,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
     </div>
   </div>
   <div class="duel-result-footer">
-    <button class="home-btn" onclick="goHome()">🏠 처음으로 돌아가기</button>
+    <button class="home-btn" onclick="goHome()">🏠 처음으로</button>
   </div>
 </div>
 
