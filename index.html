@@ -29,7 +29,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html, body {
   height: 100%;
-  overflow: hidden; /* 전체 스크롤 없애기 */
+  overflow: hidden;
 }
 body {
   font-family:'Jua',sans-serif;
@@ -37,7 +37,7 @@ body {
   height: 100vh;
   color:#fff;
   display:flex; flex-direction:column; align-items:center;
-  padding: 1vh 8px;
+  padding: 0;
   overflow: hidden;
 }
 
@@ -48,13 +48,14 @@ body {
   border-radius: 16px;
   padding: 2vh 2vw;
   box-shadow: var(--shadow);
-  width: 100%;
+  width: calc(100% - 16px);
   max-width: min(900px, 98vw);
+  margin: 1vh 8px;
   display: flex;
   flex-direction: column;
   gap: 1.2vh;
   overflow-y: auto;
-  max-height: 97vh;
+  max-height: calc(100vh - 2vh);
 }
 
 h1 {
@@ -142,7 +143,9 @@ h1 span { color:#f39c12; }
   gap: 1vh;
   width:100%;
   max-width: min(860px, 98vw);
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  padding: 1vh 8px;
   overflow: hidden;
 }
 
@@ -457,13 +460,14 @@ h1 span { color:#f39c12; }
   max-width: 100vw;
   flex-direction: column;
   align-items: stretch;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .duel-result-cols {
   display: flex;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .duel-result-panel {
@@ -545,6 +549,10 @@ h1 span { color:#f39c12; }
 #phase-result {
   display:none; flex-direction:column; align-items:center; gap:16px;
   width:100%; max-width: min(860px, 98vw);
+  flex: 1; min-height: 0;
+  padding: 1vh 8px;
+  overflow-y: auto;
+  justify-content: center;
 }
 .result-card {
   background:var(--cream); color:#222; border-radius:16px;
