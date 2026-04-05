@@ -1509,7 +1509,7 @@ function duelAnswer(pi, noteName){
       hideDuelFeedback(pi);
       p.qIdx++;
       duelShowQuestion(pi);
-    }, 800);
+    }, 400);
   } else {
     p.wrongCount++;
     showDuelFeedback(pi, false, `땡! '${nd.k}' 이에요`);
@@ -1517,7 +1517,7 @@ function duelAnswer(pi, noteName){
       hideDuelFeedback(pi);
       p.qIdx++;
       duelShowQuestion(pi);
-    }, 1200);
+    }, 700);
   }
 }
 
