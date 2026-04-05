@@ -288,7 +288,7 @@ h1 span { color:#f39c12; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4vh 1vw;
+  padding: 0.3vh 1vw;
   gap: 1vw;
   flex-shrink: 0;
 }
@@ -315,20 +315,20 @@ h1 span { color:#f39c12; }
 .player-panel.p1 { --pc: var(--p1-col); --pc-light: var(--p1-light); }
 .player-panel.p2 { --pc: var(--p2-col); --pc-light: var(--p2-light); }
 
+/* 이름 + 점수를 하나의 헤더 영역으로 통합 */
 .player-header {
   background: var(--pc);
   color: #fff;
   text-align: center;
-  padding: 4px 0 0;
-  height: 32px;
-  line-height: 28px;
+  padding: 6px 0 4px;
   border-radius: 10px 10px 0 0;
   flex-shrink: 0;
 }
 .player-name {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: clamp(1rem, 2.5vw, 1.8rem);
+  font-size: clamp(1.3rem, 3vw, 2rem);
   letter-spacing: 0.05em;
+  line-height: 1.1;
 }
 
 .score-display {
@@ -336,52 +336,53 @@ h1 span { color:#f39c12; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5vw;
-  padding: 0;
-  height: 40px;
+  gap: 0.3vw;
+  padding: 2px 0 8px;
   flex-shrink: 0;
 }
 .score-current {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
   color: #fff;
   line-height: 1;
 }
 .score-total {
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
   color: rgba(255,255,255,0.75);
   align-self: flex-end;
-  padding-bottom: 4px;
+  padding-bottom: 3px;
 }
 
+/* 오선지 영역: 남는 공간을 모두 차지 */
 .duel-staff-wrap {
   background: var(--pc-light);
   border: 2px solid var(--pc);
   border-radius: 0;
-  padding: 0.5vh 0.5vw;
+  padding: 4px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2px;
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  justify-content: center;
 }
 .duel-staff-wrap svg {
   display: block;
-  width: 100%;
-  max-width: 340px;
+  width: 96%;
+  max-width: 380px;
   height: auto;
   max-height: 100%;
   flex-shrink: 1;
 }
 .duel-q-label {
-  font-size: clamp(0.8rem, 1.4vw, 1.1rem);
+  font-size: clamp(1rem, 2vw, 1.4rem);
   color: #444;
   font-weight: bold;
 }
 
+/* 버튼 영역 */
 .duel-btns-wrap {
   display: flex;
   align-items: center;
@@ -390,28 +391,28 @@ h1 span { color:#f39c12; }
   border: 2px solid var(--pc);
   border-top: none;
   border-radius: 0 0 10px 10px;
-  padding: 4px 0.5vw;
+  padding: 5px 0.5vw;
   flex-shrink: 0;
 }
 
 .duel-note-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  gap: 5px;
   width: 100%;
 }
 
 .duel-note-btn {
   font-family: 'Jua', sans-serif;
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
   aspect-ratio: auto;
-  height: 88px;
+  height: 70px;
   width: 100%;
   border: none;
   border-radius: 10px;
   color: #fff;
   cursor: pointer;
-  transition: transform .1s;
+  transition: transform .1s, box-shadow .1s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   display: flex; align-items: center; justify-content: center;
@@ -420,13 +421,16 @@ h1 span { color:#f39c12; }
 }
 .p1 .duel-note-btn {
   background: linear-gradient(135deg, #1565c0, #1a6bbf);
-  box-shadow: 0 3px 10px rgba(21,101,192,.4);
+  box-shadow: 0 4px 0 #0d3f7a;
 }
 .p2 .duel-note-btn {
   background: linear-gradient(135deg, #b81a1a, #e53935);
-  box-shadow: 0 3px 10px rgba(184,26,26,.4);
+  box-shadow: 0 4px 0 #7a0d0d;
 }
-.duel-note-btn:active { transform: scale(.91); }
+.duel-note-btn:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
 .duel-note-btn:disabled { background: #aaa !important; box-shadow: none; cursor: default; }
 
 /* 피드백 (2인 전용, 각 패널 오버레이) */
