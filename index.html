@@ -272,7 +272,8 @@ h1 span { color:#f39c12; }
 #phase-duel {
   display: none;
   width: 100%;
-  height: 98vh;
+  flex: 1;
+  min-height: 0;
   max-width: 100vw;
   flex-direction: column;
   align-items: stretch;
@@ -451,7 +452,8 @@ h1 span { color:#f39c12; }
 #phase-duel-result {
   display: none;
   width: 100%;
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
   max-width: 100vw;
   flex-direction: column;
   align-items: stretch;
@@ -472,6 +474,8 @@ h1 span { color:#f39c12; }
   justify-content: center;
   padding: 4vh 2vw;
   gap: 2.2vh;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .duel-result-panel.p1-bg { background: linear-gradient(160deg, #1a3a6b, #0d2040); }
@@ -638,7 +642,7 @@ h1 span { color:#f39c12; }
       <button class="start-btn" onclick="startGame()">🎹 시작!</button>
     </div>
   </div>
-  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:4px;">버전 3.2</div>
+  <div style="text-align:right; color:#bbb; font-size:0.78rem; margin-top:4px;">버전 3.3</div>
 </div>
 
 <!-- ══ 2단계: 1인용 시험 ══ -->
