@@ -299,7 +299,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
   min-height: 140px;
 }
 .q-label {
-  font-size: clamp(1rem, 1.8vw, 1.6rem); color:#000; font-weight:bold;
+  font-size: clamp(2rem, 3.6vw, 3.2rem); color:#000; font-weight:bold;
 }
 .q-num { color:#c0392b; }
 
@@ -309,12 +309,12 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
   display:flex; flex-direction:column;
   align-items:center; justify-content:center; gap:2px;
 }
-.timer-label { font-size: clamp(1rem, 1.5vw, 1.6rem); color:#888; font-weight:bold; }
+.timer-label { font-size: clamp(1.5rem, 2.25vw, 2.4rem); color:#888; font-weight:bold; }
 #timer-num {
   font-family:'Black Han Sans',sans-serif;
-  font-size: clamp(3.5rem, 6vw, 6rem); color:#1a1a1a; line-height:1;
+  font-size: clamp(5.25rem, 9vw, 9rem); color:#1a1a1a; line-height:1;
 }
-#timer-unit { font-size: clamp(1.2rem, 1.8vw, 1.8rem); color:#555; }
+#timer-unit { font-size: clamp(1.8rem, 2.7vw, 2.7rem); color:#555; }
 
 /* 1인용 버튼 영역 */
 #answer-buttons {
@@ -880,15 +880,14 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
 <!-- ══ 2단계: 1인용 시험 ══ -->
 <div id="phase-quiz">
   <div style="display:flex;align-items:center;width:100%;max-width:min(860px,98vw);gap:8px;">
-    <button onclick="goHome()" style="font-family:'Jua',sans-serif;font-size:clamp(0.9rem,1.5vw,1.3rem);padding:8px 20px;background:#888;color:#fff;border:none;border-radius:12px;cursor:pointer;">← 이전</button>
+    <button onclick="goHome()" style="font-family:'Jua',sans-serif;font-size:clamp(1.08rem,1.8vw,1.56rem);padding:8px 20px;background:#888;color:#fff;border:none;border-radius:12px;cursor:pointer;">← 이전</button>
     <div style="flex:1;"></div>
-    <button id="btn-pause" onclick="togglePause()" style="font-family:'Jua',sans-serif;font-size:clamp(0.9rem,1.5vw,1.3rem);padding:8px 20px;background:#e67e22;color:#fff;border:none;border-radius:12px;cursor:pointer;">⏸ 일시정지</button>
+    <button id="btn-pause" onclick="togglePause()" style="font-family:'Jua',sans-serif;font-size:clamp(1.08rem,1.8vw,1.56rem);padding:8px 20px;background:#e67e22;color:#fff;border:none;border-radius:12px;cursor:pointer;">⏸ 일시정지</button>
   </div>
   <div class="quiz-top">
     <div class="question-card">
       <div class="q-label">계이름은? <span id="q-progress" class="q-num"></span></div>
       <svg id="quiz-staff" width="342" height="189" viewBox="0 0 360 210"></svg>
-      <div style="font-size:clamp(0.8rem,1.3vw,1.1rem);color:#999;margin-top:2px;">맞는 계이름을 눌러보세요.</div>
     </div>
     <div class="timer-card">
       <div class="timer-label">남은 시간</div>
@@ -1415,10 +1414,17 @@ function startGame(){
   unlockAudio();
   const hasAcc = cfg.keys.has('G') || cfg.keys.has('F');
   // 건반 모드이거나 임시표 조성 미선택 시 안내문 스킵
-  if(hasAcc && cfg.answerMode !== 'piano' && cfg.mode !== 2){
+  if(hasAcc && cfg.answerMode !== 'piano'){
     pendingGameMode = cfg.mode;
     document.getElementById('acc-intro-sharp').style.display = cfg.keys.has('G') ? '' : 'none';
     document.getElementById('acc-intro-flat').style.display  = cfg.keys.has('F') ? '' : 'none';
+    
+    if (cfg.keys.has('G') && cfg.keys.has('F')) {
+      document.getElementById('acc-intro-sharp').innerHTML = '파샵은 반드시 <span style="background:#1a6bbf;color:#fff;border-radius:8px;padding:2px 12px;">♯</span> → <span style="background:#8b1a1a;color:#fff;border-radius:8px;padding:2px 12px;">파</span> 를 순서대로 눌러야하고';
+    } else {
+      document.getElementById('acc-intro-sharp').innerHTML = '파샵은 반드시 <span style="background:#1a6bbf;color:#fff;border-radius:8px;padding:2px 12px;">♯</span> → <span style="background:#8b1a1a;color:#fff;border-radius:8px;padding:2px 12px;">파</span> 를 순서대로 눌러야 합니다.';
+    }
+
     document.getElementById('phase-settings').style.display='none';
     document.getElementById('phase-acc-intro').style.display='flex';
   } else {
