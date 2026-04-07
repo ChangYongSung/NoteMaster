@@ -775,7 +775,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
 <div id="phase-settings">
   <div style="display:flex; align-items:baseline; justify-content:center; gap:10px;">
     <h1>계이름 <span>마스터</span> 🎵</h1>
-    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.7.1</span>
+    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.7.2</span>
   </div>
 
   <div class="settings-cols">
@@ -868,10 +868,10 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
 </div>
 
 <!-- ══ 이동도 안내 화면 ══ -->
-<div id="phase-acc-intro" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; max-width:min(700px,98vw); margin:auto; gap:20px; padding:20px;">
-  <div style="background:#fdf6e3; border-radius:20px; padding:36px 40px; box-shadow:0 4px 24px rgba(0,0,0,.25); width:100%; color:#222; text-align:center;">
-    <div id="acc-intro-lines" style="font-family:'Jua',sans-serif; font-size:1.6rem; color:#333; line-height:2.2; margin-bottom:36px;"></div>
-    <button onclick="proceedFromAccIntro()" style="font-family:'Jua',sans-serif; font-size:1.3rem; padding:14px 48px; background:linear-gradient(135deg,#c0392b,#e74c3c); color:#fff; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 14px rgba(192,57,43,.4);">확인</button>
+<div id="phase-acc-intro" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; margin:auto; padding:20px;">
+  <div style="background:#edfaf7; border-radius:20px; padding:32px 36px; box-shadow:0 4px 24px rgba(0,0,0,.18); width:fit-content; max-width:min(660px,94vw); color:#222; text-align:center;">
+    <div id="acc-intro-lines" style="font-family:'Jua',sans-serif; font-size:1.45rem; color:#2d5a4e; line-height:2.0; margin-bottom:28px; white-space:nowrap;"></div>
+    <button onclick="proceedFromAccIntro()" style="font-family:'Jua',sans-serif; font-size:1.3rem; padding:13px 44px; background:linear-gradient(135deg,#c0392b,#e74c3c); color:#fff; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 14px rgba(192,57,43,.4);">확인</button>
   </div>
 </div>
 
@@ -1415,8 +1415,14 @@ function startGame(){
   if(cfg.answerMode === 'button' && (hasG || hasF)){
     pendingGameMode = cfg.mode;
     let lines = '';
-    if(hasG) lines += '<div>사장조의 으뜸음은 다장조의 <strong>솔</strong>입니다.</div>';
-    if(hasF) lines += '<div>바장조의 으뜸음은 다장조의 <strong>파</strong>입니다.</div>';
+    if(hasG && hasF){
+      lines += '<div>사장조의 으뜸음은 다장조의 \'솔\'이고</div>';
+      lines += '<div>바장조의 으뜸음은 다장조의 \'파\'임을 잊지 마세요.</div>';
+    } else if(hasG){
+      lines += '<div>사장조의 으뜸음은 다장조의 \'솔\'임을 잊지 마세요.</div>';
+    } else if(hasF){
+      lines += '<div>바장조의 으뜸음은 다장조의 \'파\'임을 잊지 마세요.</div>';
+    }
     document.getElementById('acc-intro-lines').innerHTML = lines;
     document.getElementById('phase-settings').style.display='none';
     document.getElementById('phase-acc-intro').style.display='flex';
@@ -1485,6 +1491,10 @@ function showQuestion(){
     const refKeyEl = document.querySelector(`[data-note="${refKeyNote}"]`);
     if(refKeyEl) refKeyEl.classList.add('ref-do');
     timeLeft = parseInt(document.getElementById('diff-slider').value);
+    // 사장조/바장조 + 큰 버튼 모드는 이동도법이므로 시간 1.75배 완화
+    if(cfg.answerMode === 'button' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F')){
+      timeLeft = Math.round(timeLeft * 1.75);
+    }
     document.getElementById('timer-num').textContent=timeLeft;
     timerInterval = setInterval(()=>{
       if(isPaused) return;
@@ -1994,7 +2004,18 @@ function drawStaff(nd, svgId){
   if(step<=-2){ for(let st=-2;st>=step;st-=2) drawLedger(st); }
   if(step>=10){ for(let st=10;st<=step;st+=2) drawLedger(st); }
 
-  const refStep = isBass ? 3 : -2;
+  // 기준 노란 음표: 조성의 으뜸음 위치
+  // 다장조: 높은=도(s:-2), 낮은=도(s:3)
+  // 사장조: 높은=솔(s:2),  낮은=솔(s:0)
+  // 바장조: 높은=파(s:1),  낮은=파(s:-1)
+  let refStep;
+  if(nd.keySig === 'G'){
+    refStep = isBass ? 0 : 2;
+  } else if(nd.keySig === 'F'){
+    refStep = isBass ? -1 : 1;
+  } else {
+    refStep = isBass ? 3 : -2;
+  }
   const refNx   = nd.keySig ? 135 : 120;
   const refNy   = line1y - refStep * halfGap;
   if(!isBass && refStep <= -2){
