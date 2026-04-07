@@ -1496,10 +1496,6 @@ function showQuestion(){
       if(refKeyEl) refKeyEl.classList.add('ref-do');
     }
     timeLeft = parseInt(document.getElementById('diff-slider').value);
-    // 사장조/바장조 + 큰 버튼 모드는 이동도법이므로 시간 1.75배 완화
-    if(cfg.answerMode === 'button' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F')){
-      timeLeft = Math.round(timeLeft * 1.75);
-    }
     document.getElementById('timer-num').textContent=timeLeft;
     timerInterval = setInterval(()=>{
       if(isPaused) return;
@@ -1610,11 +1606,14 @@ function endQuiz(){
   document.getElementById('phase-quiz').style.display='none';
   document.getElementById('phase-result').style.display='flex';
   const total=questions.length, pct=total>0?Math.round(score/total*100):0;
+  // 사장조/바장조 포함 시 평가 기준 완화 (기준 퍼센트를 1.7배로 나눔)
+  const hasAccKey = cfg.keys.has('G') || cfg.keys.has('F');
+  const evalPct = hasAccKey ? pct * 1.7 : pct;
   let emoji, msg;
-  if(pct<=50) { emoji='😓'; msg='갈 길이 멀군요. 파이팅!'; }
-  else if(pct<=70) { emoji='🙂'; msg='연습이 조금 더 필요합니다.'; }
-  else if(pct<=80) { emoji='😊'; msg='그럭저럭 읽을 수 있겠군요.'; }
-  else if(pct<=90) { emoji='😄'; msg='나쁘지 않아요.'; }
+  if(evalPct<=50) { emoji='😓'; msg='갈 길이 멀군요. 파이팅!'; }
+  else if(evalPct<=70) { emoji='🙂'; msg='연습이 조금 더 필요합니다.'; }
+  else if(evalPct<=80) { emoji='😊'; msg='그럭저럭 읽을 수 있겠군요.'; }
+  else if(evalPct<=90) { emoji='😄'; msg='나쁘지 않아요.'; }
   else { emoji='🏆'; msg='훌륭합니다!'; }
   document.getElementById('result-emoji').textContent=emoji;
   document.getElementById('result-msg').textContent=msg;
