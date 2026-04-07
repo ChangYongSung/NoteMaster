@@ -775,7 +775,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
 <div id="phase-settings">
   <div style="display:flex; align-items:baseline; justify-content:center; gap:10px;">
     <h1>계이름 <span>마스터</span> 🎵</h1>
-    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.7</span>
+    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.7.1</span>
   </div>
 
   <div class="settings-cols">
@@ -867,12 +867,10 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
 
 </div>
 
-<!-- ══ 임시표 설명 화면 ══ -->
+<!-- ══ 이동도 안내 화면 ══ -->
 <div id="phase-acc-intro" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; max-width:min(700px,98vw); margin:auto; gap:20px; padding:20px;">
   <div style="background:#fdf6e3; border-radius:20px; padding:36px 40px; box-shadow:0 4px 24px rgba(0,0,0,.25); width:100%; color:#222; text-align:center;">
-    <div style="font-family:'Jua',sans-serif; font-size:1.5rem; color:#555; margin-bottom:20px;">임시표의 답을 누를 때 순서에 주의하세요!</div>
-    <div id="acc-intro-sharp" style="font-family:'Jua',sans-serif; font-size:1.5rem; color:#333; margin-bottom:12px;">파샵은 반드시 <span style="background:#1a6bbf;color:#fff;border-radius:8px;padding:2px 12px;">♯</span> → <span style="background:#8b1a1a;color:#fff;border-radius:8px;padding:2px 12px;">파</span> 를 순서대로 눌러야하고</div>
-    <div id="acc-intro-flat" style="font-family:'Jua',sans-serif; font-size:1.5rem; color:#333; margin-bottom:36px;">시플랫은 반드시 <span style="background:#7b2d8b;color:#fff;border-radius:8px;padding:2px 12px;">♭</span> → <span style="background:#8b1a1a;color:#fff;border-radius:8px;padding:2px 12px;">시</span> 를 순서대로 눌러야 합니다.</div>
+    <div id="acc-intro-lines" style="font-family:'Jua',sans-serif; font-size:1.6rem; color:#333; line-height:2.2; margin-bottom:36px;"></div>
     <button onclick="proceedFromAccIntro()" style="font-family:'Jua',sans-serif; font-size:1.3rem; padding:14px 48px; background:linear-gradient(135deg,#c0392b,#e74c3c); color:#fff; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 14px rgba(192,57,43,.4);">확인</button>
   </div>
 </div>
@@ -1216,73 +1214,73 @@ const NOTES_TREBLE = [
 
 // 사장조(G장조): 파♯ 조표, F는 F#으로 연주. acc:'sharp', accNote:'파' 인 음표만 특별처리
 const NOTES_TREBLE_GMAJ = [
-  {n:'C4',k:'도',f:261.63,clef:'treble',s:-2,keySig:'G'},
-  {n:'D4',k:'레',f:293.66,clef:'treble',s:-1,keySig:'G'},
-  {n:'E4',k:'미',f:329.63,clef:'treble',s:0,keySig:'G'},
-  {n:'F4',k:'파',f:369.99,clef:'treble',s:1,keySig:'G',acc:'sharp',accNote:'파'}, // F#4
-  {n:'G4',k:'솔',f:392.00,clef:'treble',s:2,keySig:'G'},
-  {n:'A4',k:'라',f:440.00,clef:'treble',s:3,keySig:'G'},
-  {n:'B4',k:'시',f:493.88,clef:'treble',s:4,keySig:'G'},
-  {n:'C5',k:'도',f:523.25,clef:'treble',s:5,keySig:'G'},
-  {n:'D5',k:'레',f:587.33,clef:'treble',s:6,keySig:'G'},
-  {n:'E5',k:'미',f:659.25,clef:'treble',s:7,keySig:'G'},
-  {n:'F5',k:'파',f:739.99,clef:'treble',s:8,keySig:'G',acc:'sharp',accNote:'파'}, // F#5
-  {n:'G5',k:'솔',f:783.99,clef:'treble',s:9,keySig:'G'},
-  {n:'A5',k:'라',f:880.00,clef:'treble',s:10,keySig:'G'},
-  {n:'B5',k:'시',f:987.77,clef:'treble',s:11,keySig:'G'},
+  {n:'C4',k:'도',f:261.63,clef:'treble',s:-2,keySig:'G',movableDo:'파'},
+  {n:'D4',k:'레',f:293.66,clef:'treble',s:-1,keySig:'G',movableDo:'솔'},
+  {n:'E4',k:'미',f:329.63,clef:'treble',s:0,keySig:'G',movableDo:'라'},
+  {n:'F4',k:'파',f:369.99,clef:'treble',s:1,keySig:'G',acc:'sharp',accNote:'파',movableDo:'시'}, // F#4
+  {n:'G4',k:'솔',f:392.00,clef:'treble',s:2,keySig:'G',movableDo:'도'},
+  {n:'A4',k:'라',f:440.00,clef:'treble',s:3,keySig:'G',movableDo:'레'},
+  {n:'B4',k:'시',f:493.88,clef:'treble',s:4,keySig:'G',movableDo:'미'},
+  {n:'C5',k:'도',f:523.25,clef:'treble',s:5,keySig:'G',movableDo:'파'},
+  {n:'D5',k:'레',f:587.33,clef:'treble',s:6,keySig:'G',movableDo:'솔'},
+  {n:'E5',k:'미',f:659.25,clef:'treble',s:7,keySig:'G',movableDo:'라'},
+  {n:'F5',k:'파',f:739.99,clef:'treble',s:8,keySig:'G',acc:'sharp',accNote:'파',movableDo:'시'}, // F#5
+  {n:'G5',k:'솔',f:783.99,clef:'treble',s:9,keySig:'G',movableDo:'도'},
+  {n:'A5',k:'라',f:880.00,clef:'treble',s:10,keySig:'G',movableDo:'레'},
+  {n:'B5',k:'시',f:987.77,clef:'treble',s:11,keySig:'G',movableDo:'미'},
 ];
 // 바장조(F장조): 시♭ 조표, B는 Bb으로 연주
 const NOTES_TREBLE_FMAJ = [
-  {n:'C4',k:'도',f:261.63,clef:'treble',s:-2,keySig:'F'},
-  {n:'D4',k:'레',f:293.66,clef:'treble',s:-1,keySig:'F'},
-  {n:'E4',k:'미',f:329.63,clef:'treble',s:0,keySig:'F'},
-  {n:'F4',k:'파',f:349.23,clef:'treble',s:1,keySig:'F'},
-  {n:'G4',k:'솔',f:392.00,clef:'treble',s:2,keySig:'F'},
-  {n:'A4',k:'라',f:440.00,clef:'treble',s:3,keySig:'F'},
-  {n:'B4',k:'시',f:466.16,clef:'treble',s:4,keySig:'F',acc:'flat',accNote:'시'}, // Bb4
-  {n:'C5',k:'도',f:523.25,clef:'treble',s:5,keySig:'F'},
-  {n:'D5',k:'레',f:587.33,clef:'treble',s:6,keySig:'F'},
-  {n:'E5',k:'미',f:659.25,clef:'treble',s:7,keySig:'F'},
-  {n:'F5',k:'파',f:698.46,clef:'treble',s:8,keySig:'F'},
-  {n:'G5',k:'솔',f:783.99,clef:'treble',s:9,keySig:'F'},
-  {n:'A5',k:'라',f:880.00,clef:'treble',s:10,keySig:'F'},
-  {n:'B5',k:'시',f:932.33,clef:'treble',s:11,keySig:'F',acc:'flat',accNote:'시'}, // Bb5
+  {n:'C4',k:'도',f:261.63,clef:'treble',s:-2,keySig:'F',movableDo:'솔'},
+  {n:'D4',k:'레',f:293.66,clef:'treble',s:-1,keySig:'F',movableDo:'라'},
+  {n:'E4',k:'미',f:329.63,clef:'treble',s:0,keySig:'F',movableDo:'시'},
+  {n:'F4',k:'파',f:349.23,clef:'treble',s:1,keySig:'F',movableDo:'도'},
+  {n:'G4',k:'솔',f:392.00,clef:'treble',s:2,keySig:'F',movableDo:'레'},
+  {n:'A4',k:'라',f:440.00,clef:'treble',s:3,keySig:'F',movableDo:'미'},
+  {n:'B4',k:'시',f:466.16,clef:'treble',s:4,keySig:'F',acc:'flat',accNote:'시',movableDo:'파'}, // Bb4
+  {n:'C5',k:'도',f:523.25,clef:'treble',s:5,keySig:'F',movableDo:'솔'},
+  {n:'D5',k:'레',f:587.33,clef:'treble',s:6,keySig:'F',movableDo:'라'},
+  {n:'E5',k:'미',f:659.25,clef:'treble',s:7,keySig:'F',movableDo:'시'},
+  {n:'F5',k:'파',f:698.46,clef:'treble',s:8,keySig:'F',movableDo:'도'},
+  {n:'G5',k:'솔',f:783.99,clef:'treble',s:9,keySig:'F',movableDo:'레'},
+  {n:'A5',k:'라',f:880.00,clef:'treble',s:10,keySig:'F',movableDo:'미'},
+  {n:'B5',k:'시',f:932.33,clef:'treble',s:11,keySig:'F',acc:'flat',accNote:'시',movableDo:'파'}, // Bb5
 ];
 // 낮은음자리 사장조
 const NOTES_BASS_GMAJ = [
-  {n:'C2',k:'도',f:65.41, clef:'bass',s:-4,keySig:'G'},
-  {n:'D2',k:'레',f:73.42, clef:'bass',s:-3,keySig:'G'},
-  {n:'E2',k:'미',f:82.41, clef:'bass',s:-2,keySig:'G'},
-  {n:'F2',k:'파',f:92.50, clef:'bass',s:-1,keySig:'G',acc:'sharp',accNote:'파'}, // F#2
-  {n:'G2',k:'솔',f:98.00, clef:'bass',s:0, keySig:'G'},
-  {n:'A2',k:'라',f:110.00,clef:'bass',s:1, keySig:'G'},
-  {n:'B2',k:'시',f:123.47,clef:'bass',s:2, keySig:'G'},
-  {n:'C3',k:'도',f:130.81,clef:'bass',s:3,keySig:'G'},
-  {n:'D3',k:'레',f:146.83,clef:'bass',s:4,keySig:'G'},
-  {n:'E3',k:'미',f:164.81,clef:'bass',s:5,keySig:'G'},
-  {n:'F3',k:'파',f:185.00,clef:'bass',s:6,keySig:'G',acc:'sharp',accNote:'파'}, // F#3
-  {n:'G3',k:'솔',f:196.00,clef:'bass',s:7,keySig:'G'},
-  {n:'A3',k:'라',f:220.00,clef:'bass',s:8,keySig:'G'},
-  {n:'B3',k:'시',f:246.94,clef:'bass',s:9,keySig:'G'},
-  {n:'C4',k:'도',f:261.63,clef:'bass',s:10,keySig:'G'},
+  {n:'C2',k:'도',f:65.41, clef:'bass',s:-4,keySig:'G',movableDo:'파'},
+  {n:'D2',k:'레',f:73.42, clef:'bass',s:-3,keySig:'G',movableDo:'솔'},
+  {n:'E2',k:'미',f:82.41, clef:'bass',s:-2,keySig:'G',movableDo:'라'},
+  {n:'F2',k:'파',f:92.50, clef:'bass',s:-1,keySig:'G',acc:'sharp',accNote:'파',movableDo:'시'}, // F#2
+  {n:'G2',k:'솔',f:98.00, clef:'bass',s:0, keySig:'G',movableDo:'도'},
+  {n:'A2',k:'라',f:110.00,clef:'bass',s:1, keySig:'G',movableDo:'레'},
+  {n:'B2',k:'시',f:123.47,clef:'bass',s:2, keySig:'G',movableDo:'미'},
+  {n:'C3',k:'도',f:130.81,clef:'bass',s:3,keySig:'G',movableDo:'파'},
+  {n:'D3',k:'레',f:146.83,clef:'bass',s:4,keySig:'G',movableDo:'솔'},
+  {n:'E3',k:'미',f:164.81,clef:'bass',s:5,keySig:'G',movableDo:'라'},
+  {n:'F3',k:'파',f:185.00,clef:'bass',s:6,keySig:'G',acc:'sharp',accNote:'파',movableDo:'시'}, // F#3
+  {n:'G3',k:'솔',f:196.00,clef:'bass',s:7,keySig:'G',movableDo:'도'},
+  {n:'A3',k:'라',f:220.00,clef:'bass',s:8,keySig:'G',movableDo:'레'},
+  {n:'B3',k:'시',f:246.94,clef:'bass',s:9,keySig:'G',movableDo:'미'},
+  {n:'C4',k:'도',f:261.63,clef:'bass',s:10,keySig:'G',movableDo:'파'},
 ];
 // 낮은음자리 바장조
 const NOTES_BASS_FMAJ = [
-  {n:'C2',k:'도',f:65.41, clef:'bass',s:-4,keySig:'F'},
-  {n:'D2',k:'레',f:73.42, clef:'bass',s:-3,keySig:'F'},
-  {n:'E2',k:'미',f:82.41, clef:'bass',s:-2,keySig:'F'},
-  {n:'F2',k:'파',f:87.31, clef:'bass',s:-1,keySig:'F'},
-  {n:'G2',k:'솔',f:98.00, clef:'bass',s:0, keySig:'F'},
-  {n:'A2',k:'라',f:110.00,clef:'bass',s:1, keySig:'F'},
-  {n:'B2',k:'시',f:116.54,clef:'bass',s:2, keySig:'F',acc:'flat',accNote:'시'}, // Bb2
-  {n:'C3',k:'도',f:130.81,clef:'bass',s:3,keySig:'F'},
-  {n:'D3',k:'레',f:146.83,clef:'bass',s:4,keySig:'F'},
-  {n:'E3',k:'미',f:164.81,clef:'bass',s:5,keySig:'F'},
-  {n:'F3',k:'파',f:174.61,clef:'bass',s:6,keySig:'F'},
-  {n:'G3',k:'솔',f:196.00,clef:'bass',s:7,keySig:'F'},
-  {n:'A3',k:'라',f:220.00,clef:'bass',s:8,keySig:'F'},
-  {n:'B3',k:'시',f:233.08,clef:'bass',s:9,keySig:'F',acc:'flat',accNote:'시'}, // Bb3
-  {n:'C4',k:'도',f:261.63,clef:'bass',s:10,keySig:'F'},
+  {n:'C2',k:'도',f:65.41, clef:'bass',s:-4,keySig:'F',movableDo:'솔'},
+  {n:'D2',k:'레',f:73.42, clef:'bass',s:-3,keySig:'F',movableDo:'라'},
+  {n:'E2',k:'미',f:82.41, clef:'bass',s:-2,keySig:'F',movableDo:'시'},
+  {n:'F2',k:'파',f:87.31, clef:'bass',s:-1,keySig:'F',movableDo:'도'},
+  {n:'G2',k:'솔',f:98.00, clef:'bass',s:0, keySig:'F',movableDo:'레'},
+  {n:'A2',k:'라',f:110.00,clef:'bass',s:1, keySig:'F',movableDo:'미'},
+  {n:'B2',k:'시',f:116.54,clef:'bass',s:2, keySig:'F',acc:'flat',accNote:'시',movableDo:'파'}, // Bb2
+  {n:'C3',k:'도',f:130.81,clef:'bass',s:3,keySig:'F',movableDo:'솔'},
+  {n:'D3',k:'레',f:146.83,clef:'bass',s:4,keySig:'F',movableDo:'라'},
+  {n:'E3',k:'미',f:164.81,clef:'bass',s:5,keySig:'F',movableDo:'시'},
+  {n:'F3',k:'파',f:174.61,clef:'bass',s:6,keySig:'F',movableDo:'도'},
+  {n:'G3',k:'솔',f:196.00,clef:'bass',s:7,keySig:'F',movableDo:'레'},
+  {n:'A3',k:'라',f:220.00,clef:'bass',s:8,keySig:'F',movableDo:'미'},
+  {n:'B3',k:'시',f:233.08,clef:'bass',s:9,keySig:'F',acc:'flat',accNote:'시',movableDo:'파'}, // Bb3
+  {n:'C4',k:'도',f:261.63,clef:'bass',s:10,keySig:'F',movableDo:'솔'},
 ];
 const NOTES_BASS = [
   {n:'C3',k:'도',f:130.81,clef:'bass',s:3},
@@ -1412,19 +1410,14 @@ function makeQuestions(total){
 let pendingGameMode = null; // 설명 화면 후 실행할 모드 저장
 function startGame(){
   unlockAudio();
-  const hasAcc = cfg.keys.has('G') || cfg.keys.has('F');
-  // 건반 모드이거나 임시표 조성 미선택 시 안내문 스킵
-  if(hasAcc && cfg.answerMode !== 'piano'){
+  const hasG = cfg.keys.has('G'), hasF = cfg.keys.has('F');
+  // 큰 버튼 모드 + 사장조/바장조 조합이면 이동도 안내문 표시
+  if(cfg.answerMode === 'button' && (hasG || hasF)){
     pendingGameMode = cfg.mode;
-    document.getElementById('acc-intro-sharp').style.display = cfg.keys.has('G') ? '' : 'none';
-    document.getElementById('acc-intro-flat').style.display  = cfg.keys.has('F') ? '' : 'none';
-    
-    if (cfg.keys.has('G') && cfg.keys.has('F')) {
-      document.getElementById('acc-intro-sharp').innerHTML = '파샵은 반드시 <span style="background:#1a6bbf;color:#fff;border-radius:8px;padding:2px 12px;">♯</span> → <span style="background:#8b1a1a;color:#fff;border-radius:8px;padding:2px 12px;">파</span> 를 순서대로 눌러야하고';
-    } else {
-      document.getElementById('acc-intro-sharp').innerHTML = '파샵은 반드시 <span style="background:#1a6bbf;color:#fff;border-radius:8px;padding:2px 12px;">♯</span> → <span style="background:#8b1a1a;color:#fff;border-radius:8px;padding:2px 12px;">파</span> 를 순서대로 눌러야 합니다.';
-    }
-
+    let lines = '';
+    if(hasG) lines += '<div>사장조의 으뜸음은 다장조의 <strong>솔</strong>입니다.</div>';
+    if(hasF) lines += '<div>바장조의 으뜸음은 다장조의 <strong>파</strong>입니다.</div>';
+    document.getElementById('acc-intro-lines').innerHTML = lines;
     document.getElementById('phase-settings').style.display='none';
     document.getElementById('phase-acc-intro').style.display='flex';
   } else {
@@ -1507,8 +1500,8 @@ function timeUp(){
   canAnswer=false;
   accPending=false; highlightAccBtn(false);
   const nd=questions[qIdx];
-  const accLabel = nd.acc==='sharp' ? '♯' : nd.acc==='flat' ? '♭' : '';
-  showFeedback(false,`시간 초과! 정답은 '${accLabel}${nd.k}'입니다.`);
+  const correctLabel = (cfg.answerMode==='button' && nd.movableDo) ? nd.movableDo : (nd.acc==='sharp' ? '♯' : nd.acc==='flat' ? '♭' : '') + nd.k;
+  showFeedback(false,`시간 초과! 정답은 '${correctLabel}'입니다.`);
   setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
 }
 
@@ -1527,20 +1520,7 @@ function renderNoteBtns(nd){
     btn.onclick = ()=>onNoteBtn(label);
     wrap.appendChild(btn);
   });
-  // 임시표 버튼은 맨 끝(시 오른쪽)에 추가
-  if(nd && nd.keySig === 'G'){
-    const accBtn = document.createElement('button');
-    accBtn.className = 'note-btn acc-btn-sharp';
-    accBtn.textContent = '♯';
-    accBtn.onclick = ()=>onAccBtn('sharp');
-    wrap.appendChild(accBtn);
-  } else if(nd && nd.keySig === 'F'){
-    const accBtn = document.createElement('button');
-    accBtn.className = 'note-btn acc-btn-flat';
-    accBtn.textContent = '♭';
-    accBtn.onclick = ()=>onAccBtn('flat');
-    wrap.appendChild(accBtn);
-  }
+  // 큰 버튼 모드는 이동도법이므로 임시표 버튼 없음
   accPending = false;
   highlightAccBtn(false);
 }
@@ -1563,35 +1543,18 @@ function onNoteBtn(noteName){
   if(document.getElementById('phase-quiz').style.display==='none') return;
   const nd = questions[qIdx];
 
-  // 임시표가 있는 문제: 반드시 임시표 먼저
-  if(nd.acc){
-    if(!accPending){
-      // 임시표 안 누르고 계이름 먼저 눌렀음 → 오답
-      canAnswer=false;
-      clearInterval(timerInterval);
-      playNote(nd.f);
-      const accLabel = nd.acc==='sharp' ? '♯' : '♭';
-      showFeedback(false,`땡! ${accLabel}을 먼저 누르세요! 정답은 '${accLabel}${nd.k}'입니다.`);
-      accPending = false;
-      highlightAccBtn(false);
-      setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },2000);
-      return;
-    }
-    // 임시표 누른 상태에서 계이름 입력
-    accPending = false;
-    highlightAccBtn(false);
-  }
+  // 버튼 모드: 이동도법으로 채점 (keySig가 있으면 movableDo, 없으면 k)
+  const correctLabel = (nd.movableDo) ? nd.movableDo : nd.k;
 
   canAnswer=false;
   clearInterval(timerInterval);
   playNote(nd.f);
-  if(noteName===nd.k){
+  if(noteName === correctLabel){
     score++;
     showFeedback(true,'정답! ✓');
     setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1000);
   } else {
-    const accLabel = nd.acc==='sharp' ? '♯' : nd.acc==='flat' ? '♭' : '';
-    showFeedback(false,`땡! 정답은 '${accLabel}${nd.k}'입니다.`);
+    showFeedback(false,`땡! 정답은 '${correctLabel}'입니다.`);
     setTimeout(()=>{ hideFeedback(); qIdx++; showQuestion(); },1800);
   }
 }
@@ -1741,20 +1704,7 @@ function buildDuelButtons(pi, nd){
     btn.addEventListener('pointerdown', e=>{ unlockAudio(); e.preventDefault(); duelAnswer(pi, note); });
     el.appendChild(btn);
   });
-  // 임시표 버튼은 맨 끝(시 오른쪽)에 추가
-  if(nd && nd.keySig==='G'){
-    const accBtn = document.createElement('button');
-    accBtn.className = 'duel-note-btn acc-btn-sharp';
-    accBtn.textContent = '♯';
-    accBtn.addEventListener('pointerdown', e=>{ unlockAudio(); e.preventDefault(); duelAccBtn(pi,'sharp'); });
-    el.appendChild(accBtn);
-  } else if(nd && nd.keySig==='F'){
-    const accBtn = document.createElement('button');
-    accBtn.className = 'duel-note-btn acc-btn-flat';
-    accBtn.textContent = '♭';
-    accBtn.addEventListener('pointerdown', e=>{ unlockAudio(); e.preventDefault(); duelAccBtn(pi,'flat'); });
-    el.appendChild(accBtn);
-  }
+  // 큰 버튼 모드는 이동도법이므로 임시표 버튼 없음
   duel.p[pi].accPending = false;
   duelHighlightAcc(pi, false);
 }
@@ -1817,22 +1767,6 @@ function duelAnswer(pi, noteName){
 
   const nd = p.questions[p.qIdx];
 
-  // 임시표 문제인데 acc 안 눌렀으면 오답
-  if(nd.acc && !p.accPending){
-    p.canAnswer = false;
-    setDuelBtnsEnabled(pi, false);
-    playNote(nd.f);
-    p.totalAttempts++;
-    p.wrongCount++;
-    p.endTimes.push(Date.now());
-    const accLabel = nd.acc==='sharp' ? '♯' : '♭';
-    showDuelFeedback(pi, false, `${accLabel}먼저! '${accLabel}${nd.k}'`);
-    p.accPending = false;
-    duelHighlightAcc(pi, false);
-    setTimeout(()=>{ hideDuelFeedback(pi); p.qIdx++; duelShowQuestion(pi); }, 800);
-    return;
-  }
-
   p.accPending = false;
   duelHighlightAcc(pi, false);
   p.canAnswer = false;
@@ -1842,7 +1776,9 @@ function duelAnswer(pi, noteName){
   p.totalAttempts++;
   p.endTimes.push(Date.now());
 
-  const correct = (noteName === nd.k);
+  // 이동도법으로 채점
+  const correctLabel = nd.movableDo ? nd.movableDo : nd.k;
+  const correct = (noteName === correctLabel);
   if(correct){
     p.score++;
     document.getElementById(`p${pi+1}-score`).textContent = p.score;
@@ -1861,8 +1797,7 @@ function duelAnswer(pi, noteName){
     }, 400);
   } else {
     p.wrongCount++;
-    const accLabel = nd.acc==='sharp' ? '♯' : nd.acc==='flat' ? '♭' : '';
-    showDuelFeedback(pi, false, `땡! '${accLabel}${nd.k}' 이에요`);
+    showDuelFeedback(pi, false, `땡! '${correctLabel}' 이에요`);
     setTimeout(()=>{
       hideDuelFeedback(pi);
       p.qIdx++;
@@ -2009,7 +1944,7 @@ function drawKeySig(svg, keySig, isBass, line1y, lineGap, halfGap, startX){
   if(keySig==='G'){
     const sigStep = isBass ? 9 : 8;
     if(isBass) drawSharpSVG(svg, startX+9,  line1y - sigStep*halfGap + 14, 1.56, col);
-    else       drawSharpSVG(svg, startX+14, line1y - sigStep*halfGap - 6,  1.56, col);
+    else       drawSharpSVG(svg, startX+14, line1y - sigStep*halfGap - 16, 1.56, col);
   } else if(keySig==='F'){
     const sigStep = isBass ? 5 : 4;
     if(isBass) drawFlatSVG(svg, startX+5,  line1y - sigStep*halfGap + 17, 1.56, col);
