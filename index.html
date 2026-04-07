@@ -1608,15 +1608,12 @@ function endQuiz(){
   document.getElementById('phase-quiz').style.display='none';
   document.getElementById('phase-result').style.display='flex';
   const total=questions.length, pct=total>0?Math.round(score/total*100):0;
-  // 사장조/바장조 포함 시 평가 기준 완화 (기준 퍼센트를 1.7배로 나눔)
-  const hasAccKey = cfg.keys.has('G') || cfg.keys.has('F');
-  const evalPct = hasAccKey ? pct * 1.7 : pct;
   let emoji, msg;
-  if(evalPct<=50) { emoji='😓'; msg='갈 길이 멀군요. 파이팅!'; }
-  else if(evalPct<=70) { emoji='🙂'; msg='연습이 조금 더 필요합니다.'; }
-  else if(evalPct<=80) { emoji='😊'; msg='그럭저럭 읽을 수 있겠군요.'; }
-  else if(evalPct<=90) { emoji='😄'; msg='나쁘지 않아요.'; }
-  else { emoji='🏆'; msg='훌륭합니다!'; }
+  if(pct===100)      { emoji='🌟'; msg='완벽합니다!'; }
+  else if(pct>=90)   { emoji='🏆'; msg='훌륭합니다!'; }
+  else if(pct>=75)   { emoji='😊'; msg='그럭저럭 읽을 수 있겠군요.'; }
+  else if(pct>=50)   { emoji='🙂'; msg='조금만 더 연습해보아요.'; }
+  else               { emoji='💪'; msg='아직 발전 가능성이 많군요. 파이팅!'; }
   document.getElementById('result-emoji').textContent=emoji;
   document.getElementById('result-msg').textContent=msg;
   document.getElementById('result-score').textContent=`${total}문제 중 ${score}개 정답`;
