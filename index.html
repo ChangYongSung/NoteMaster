@@ -777,7 +777,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
 <div id="phase-settings">
   <div style="display:flex; align-items:baseline; justify-content:center; gap:10px;">
     <h1>계이름 <span>마스터</span> 🎵</h1>
-    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.7.2</span>
+    <span style="font-family:'Jua',sans-serif; color:#bbb; font-size:0.85rem; white-space:nowrap;">v3.7.3</span>
   </div>
 
   <div class="settings-cols">
@@ -1344,6 +1344,29 @@ function buildQuestionPool(){
   return pool;
 }
 
+// 연속 중복 방지: 앞에서부터 순차 스캔하며 교환 후 해당 위치를 재검사
+function dedup(arr, prevLast){
+  // prevLast: 이어붙이기 직전 마지막 음(n) — 경계 처리용
+  const start = prevLast !== undefined ? 0 : 1;
+  for(let i = start; i < arr.length; i++){
+    const prev = i === 0 ? prevLast : arr[i-1].n;
+    if(arr[i].n === prev){
+      // 뒤에서 다른 음 찾아 교환
+      let swapped = false;
+      for(let j = i+1; j < arr.length; j++){
+        if(arr[j].n !== prev && (i === 0 || arr[j].n !== arr[i-1]?.n)){
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+          swapped = true;
+          break;
+        }
+      }
+      // 교환 못 했으면(배열 끝에 같은 음만 남은 경우) 그냥 넘김
+      if(!swapped) continue;
+      i--; // 교환 후 같은 위치 재검사
+    }
+  }
+}
+
 function makeQuestions(total){
   const keys = [...cfg.keys];
   const n = keys.length;
@@ -1398,13 +1421,7 @@ function makeQuestions(total){
   let all = [];
   keys.forEach((key,i) => { all = all.concat(makeChunk(key, counts[i])); });
   shuffle(all);
-  for(let i=1;i<all.length;i++){
-    if(all[i].n===all[i-1].n){
-      for(let j=i+1;j<all.length;j++){
-        if(all[j].n!==all[i-1].n){ [all[i],all[j]]=[all[j],all[i]]; break; }
-      }
-    }
-  }
+  dedup(all);
   return all;
 }
 
@@ -1729,8 +1746,11 @@ function duelShowQuestion(pi){
   const labelId = `p${pi+1}-q-label`;
 
   if(p.qIdx >= p.questions.length){
-    // 문제 부족하면 추가 생성
-    p.questions = p.questions.concat(makeQuestions(20));
+    // 문제 부족하면 추가 생성 (경계 연속 중복 방지)
+    const prevLast = p.questions.length > 0 ? p.questions[p.questions.length-1].n : undefined;
+    const extra = makeQuestions(20);
+    dedup(extra, prevLast);
+    p.questions = p.questions.concat(extra);
   }
 
   p.canAnswer = false;
