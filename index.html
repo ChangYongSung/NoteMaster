@@ -309,7 +309,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
   display:flex; flex-direction:column;
   align-items:center; justify-content:center; gap:2px;
 }
-.timer-label { font-size: clamp(1.5rem, 2.25vw, 2.4rem); color:#888; font-weight:bold; }
+.timer-label { font-size: clamp(1.32rem, 1.98vw, 2.11rem); color:#888; font-weight:bold; }
 #timer-num {
   font-family:'Black Han Sans',sans-serif;
   font-size: clamp(5.25rem, 9vw, 9rem); color:#1a1a1a; line-height:1;
@@ -1411,8 +1411,9 @@ let pendingGameMode = null; // 설명 화면 후 실행할 모드 저장
 function startGame(){
   unlockAudio();
   const hasG = cfg.keys.has('G'), hasF = cfg.keys.has('F');
-  // 큰 버튼 모드 + 사장조/바장조 조합이면 이동도 안내문 표시
-  if(cfg.answerMode === 'button' && (hasG || hasF)){
+  // 큰 버튼 모드 + 사장조/바장조 조합이면 이동도 안내문 표시 (현재 비활성: 오선지 노란음표로 충분)
+  const showIntro = false; // 나중에 true로 바꾸면 다시 활성화됨
+  if(showIntro && cfg.answerMode === 'button' && (hasG || hasF)){
     pendingGameMode = cfg.mode;
     let lines = '';
     if(hasG && hasF){
