@@ -1487,9 +1487,13 @@ function showQuestion(){
     // 버튼 모드일 때 임시표 버튼 포함해서 다시 그리기
     if(cfg.answerMode==='button') renderNoteBtns(nd);
     document.querySelectorAll('.key').forEach(k=>k.classList.remove('ref-do'));
-    const refKeyNote = (nd.clef==='treble') ? 'C4' : 'C3';
-    const refKeyEl = document.querySelector(`[data-note="${refKeyNote}"]`);
-    if(refKeyEl) refKeyEl.classList.add('ref-do');
+    // 사장조/바장조 피아노 모드: 노란 기준 건반 표시 안 함
+    const showRefKey = !(cfg.answerMode === 'piano' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F'));
+    if(showRefKey){
+      const refKeyNote = (nd.clef==='treble') ? 'C4' : 'C3';
+      const refKeyEl = document.querySelector(`[data-note="${refKeyNote}"]`);
+      if(refKeyEl) refKeyEl.classList.add('ref-do');
+    }
     timeLeft = parseInt(document.getElementById('diff-slider').value);
     // 사장조/바장조 + 큰 버튼 모드는 이동도법이므로 시간 1.75배 완화
     if(cfg.answerMode === 'button' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F')){
@@ -2023,7 +2027,11 @@ function drawStaff(nd, svgId){
       se(svg,'line',{x1:refNx-r-6,x2:refNx+r+6,y1:line1y-st*halfGap,y2:line1y-st*halfGap,stroke:'#8b3a1a','stroke-width':1.8});
     }
   }
-  se(svg,'ellipse',{cx:refNx,cy:refNy,rx:r+1,ry:r-1,fill:'#f1c40f',stroke:'#e67e22','stroke-width':1.5,transform:`rotate(-15,${refNx},${refNy})`});
+  // 사장조/바장조 피아노 모드: 노란 기준 음표 표시 안 함
+  const showRefNote = !(cfg.answerMode === 'piano' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F'));
+  if(showRefNote){
+    se(svg,'ellipse',{cx:refNx,cy:refNy,rx:r+1,ry:r-1,fill:'#f1c40f',stroke:'#e67e22','stroke-width':1.5,transform:`rotate(-15,${refNx},${refNy})`});
+  }
 
   se(svg,'ellipse',{cx:nx,cy:ny,rx:r+1,ry:r-1,fill:'#8b1a1a',transform:`rotate(-15,${nx},${ny})`});
   const stemUp = step<5;
@@ -2043,11 +2051,13 @@ function buildKb(minNote, maxNote){
     return noteNum>=minNum && noteNum<=maxNum;
   });
   const wIdxLocal = {}; wLocal.forEach((n,i)=>wIdxLocal[n.n]=i);
+  // 사장조/바장조만 선택된 피아노 모드: 건반 계이름 숨김 (다장조 포함 혼합이면 표시)
+  const onlyAccKeys = cfg.answerMode === 'piano' && !cfg.keys.has('C') && [...cfg.keys].every(k => k==='G' || k==='F');
   wLocal.forEach((n,i)=>{
     const el=document.createElement('div');
     el.className='key white'; el.dataset.note=n.n;
     const lbl=document.createElement('div');
-    lbl.className='key-label'; lbl.textContent=n.k;
+    lbl.className='key-label'; lbl.textContent=onlyAccKeys ? '' : n.k;
     el.appendChild(lbl);
     el.addEventListener('pointerdown',e=>{ unlockAudio(); e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('pressed'); onKey(n); });
     el.addEventListener('pointerup',  e=>{ el.releasePointerCapture(e.pointerId); el.classList.remove('pressed'); });
