@@ -1487,8 +1487,8 @@ function showQuestion(){
     // 버튼 모드일 때 임시표 버튼 포함해서 다시 그리기
     if(cfg.answerMode==='button') renderNoteBtns(nd);
     document.querySelectorAll('.key').forEach(k=>k.classList.remove('ref-do'));
-    // 사장조/바장조 피아노 모드: 노란 기준 건반 표시 안 함
-    const showRefKey = !(cfg.answerMode === 'piano' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F'));
+    // 사장조/바장조가 하나라도 선택된 피아노 모드: 노란 기준 건반 표시 안 함
+    const showRefKey = !(cfg.answerMode === 'piano' && (cfg.keys.has('G') || cfg.keys.has('F')));
     if(showRefKey){
       const refKeyNote = (nd.clef==='treble') ? 'C4' : 'C3';
       const refKeyEl = document.querySelector(`[data-note="${refKeyNote}"]`);
@@ -2022,14 +2022,14 @@ function drawStaff(nd, svgId){
   }
   const refNx   = nd.keySig ? 135 : 120;
   const refNy   = line1y - refStep * halfGap;
-  if(!isBass && refStep <= -2){
-    for(let st=refStep; st<=-2; st+=2){
-      se(svg,'line',{x1:refNx-r-6,x2:refNx+r+6,y1:line1y-st*halfGap,y2:line1y-st*halfGap,stroke:'#8b3a1a','stroke-width':1.8});
-    }
-  }
-  // 사장조/바장조 피아노 모드: 노란 기준 음표 표시 안 함
-  const showRefNote = !(cfg.answerMode === 'piano' && nd.keySig && (nd.keySig === 'G' || nd.keySig === 'F'));
+  // 사장조/바장조가 하나라도 선택된 피아노 모드: 노란 기준 음표 + 덧줄 표시 안 함
+  const showRefNote = !(cfg.answerMode === 'piano' && (cfg.keys.has('G') || cfg.keys.has('F')));
   if(showRefNote){
+    if(!isBass && refStep <= -2){
+      for(let st=refStep; st<=-2; st+=2){
+        se(svg,'line',{x1:refNx-r-6,x2:refNx+r+6,y1:line1y-st*halfGap,y2:line1y-st*halfGap,stroke:'#8b3a1a','stroke-width':1.8});
+      }
+    }
     se(svg,'ellipse',{cx:refNx,cy:refNy,rx:r+1,ry:r-1,fill:'#f1c40f',stroke:'#e67e22','stroke-width':1.5,transform:`rotate(-15,${refNx},${refNy})`});
   }
 
@@ -2051,8 +2051,8 @@ function buildKb(minNote, maxNote){
     return noteNum>=minNum && noteNum<=maxNum;
   });
   const wIdxLocal = {}; wLocal.forEach((n,i)=>wIdxLocal[n.n]=i);
-  // 사장조/바장조만 선택된 피아노 모드: 건반 계이름 숨김 (다장조 포함 혼합이면 표시)
-  const onlyAccKeys = cfg.answerMode === 'piano' && !cfg.keys.has('C') && [...cfg.keys].every(k => k==='G' || k==='F');
+  // 사장조/바장조가 하나라도 선택된 피아노 모드: 건반 계이름 숨김
+  const onlyAccKeys = cfg.answerMode === 'piano' && (cfg.keys.has('G') || cfg.keys.has('F'));
   wLocal.forEach((n,i)=>{
     const el=document.createElement('div');
     el.className='key white'; el.dataset.note=n.n;
