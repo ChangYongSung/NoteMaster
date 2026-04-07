@@ -701,7 +701,7 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
   border-radius: 12px;
   padding: 1.8vh 2vw;
   width: 100%;
-  max-width: 360px;
+  max-width: min(360px, 42vw);
 }
 .result-stat-row {
   display: flex;
@@ -710,6 +710,8 @@ input.diff-slider:active::-moz-range-thumb     { cursor: grabbing; }
   padding: 1vh 0;
   border-bottom: 1px solid rgba(255,255,255,.12);
   font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  gap: 12px;
+  white-space: nowrap;
 }
 .result-stat-row:last-child { border-bottom: none; }
 .stat-label { color: rgba(255,255,255,.7); }
